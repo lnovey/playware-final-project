@@ -82,8 +82,8 @@ public class PathAlgorithmActivity extends AppCompatActivity {
             for (int j = 0; j <3; j++){
                 bA[i][j] = buttons[count];
                 //buttonArray[i][j].setBackgroundColor
-                 //       (Color.argb(count*15, count*15,
-                  //              count*15, 0));
+                //       (Color.argb(count*15, count*15,
+                //              count*15, 0));
                 count ++;
             }
         }
@@ -220,8 +220,8 @@ public class PathAlgorithmActivity extends AppCompatActivity {
                 System.out.print("trying a new direction: " + rand);
                 System.out.println(" weve tried: " + dirTried + "directions");
                 switch (rand){//each case checks the direction, if available adds that button
-                              //to the seen array, and to the path, increments path length
-                              //indicates new path found,
+                    //to the seen array, and to the path, increments path length
+                    //indicates new path found,
                     case 0: //left
                         if (isDirGood(x-1,y)){
                             x = x-1;
@@ -370,19 +370,19 @@ public class PathAlgorithmActivity extends AppCompatActivity {
                 pos = pos + 10;
                 returner[count] = bA [pos/10][pos%10];
                 //bA [pos/10][pos%10].setBackgroundColor(Color.argb(
-                 //       count*20, count*20,0, 0));
+                //       count*20, count*20,0, 0));
 
             } else if (rand < .66) { //dir = diag
                 pos = pos + 11;
                 returner[count] = bA [pos/10][pos%10];
                 //bA [pos/10][pos%10].setBackgroundColor(Color.argb(
-                 //       count*20, count*20,0, 0));
+                //       count*20, count*20,0, 0));
 
             } else { // dir = right
                 pos = pos + 1;
                 returner[count] = bA [pos/10][pos%10];
                 //bA [pos/10][pos%10].setBackgroundColor(Color.argb(
-                 //       count*20, count*20,0, 0));
+                //       count*20, count*20,0, 0));
             }
         }
 
