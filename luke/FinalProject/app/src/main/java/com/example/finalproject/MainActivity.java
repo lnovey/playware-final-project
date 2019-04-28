@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity implements OnAntEventListene
     MotoConnection connection;
     Button paringButton;
     Button startGameButton;
+    Button testFight;
     boolean isParing = false;
 
     @Override
@@ -29,6 +30,18 @@ public class MainActivity extends AppCompatActivity implements OnAntEventListene
 
         startGameButton = findViewById(R.id.startGameButton);
         paringButton = findViewById(R.id.paringButton);
+        testFight = findViewById(R.id.testFight);
+
+        testFight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //connection.setTileColor(LED_COLOR_RED, 1);
+                connection.unregisterListener(MainActivity.this);
+                Intent i = new Intent(MainActivity.this, BattleActivity.class);
+                startActivity(i);
+            }
+        });
+
         paringButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
