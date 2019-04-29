@@ -338,6 +338,7 @@ public class PathAlgorithmActivity extends AppCompatActivity {
                 }
                 //dirTried = dirTried + 1;
                 rand = (rand+1)%8;
+                //try rand = (rand+5)%8;
             }
             dirTried = 0;
             System.out.println("out of while loop, went: " + (rand-1) +

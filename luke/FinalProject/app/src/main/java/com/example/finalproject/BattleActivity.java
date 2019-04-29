@@ -1,5 +1,6 @@
 package com.example.finalproject;
 
+import android.app.Activity;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -162,7 +163,6 @@ public class BattleActivity extends AppCompatActivity {
 
                 }
             }
-
         }
     };
 
@@ -242,6 +242,8 @@ public class BattleActivity extends AppCompatActivity {
         } else {
             System.out.println("you won the fight,\n gaining xp\n go to next level!");
         }
+
+        this.finish();
     }
 
     private void setupBattle(){

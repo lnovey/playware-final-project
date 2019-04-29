@@ -1,5 +1,6 @@
 package com.example.finalproject;
 
+import android.content.Intent;
 import android.graphics.Point;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,7 +22,14 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
     Point character_location = new Point(tzp_object.character_start_x, tzp_object.character_start_y); // Stores the location of our character
 
+    //the state of the game loop
+    //0 = in main overworld, walking around
+    //1 = encountered battle
+    // 2 = in battle
     private int currState;
+
+    //boolean to run game loop
+    private boolean isGameRunning;
 
     // Initial values for the character's vital signs
     int xp = 5;
@@ -99,7 +107,6 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             @Override
             public void onClick(View view)
             {
-                currState = 17;
                 px();
             }
 
@@ -216,33 +223,49 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             }
         };
 
+
         Thread mainGameLoop = new Thread(){
 
             @Override
             public void run()
             {
                 try {
-                    while (currState < 10){
-                        System.out.println("in the thread, state: "+ currState);
+                    while (isGameRunning){
 
-                        currState++;
+                        switch (currState) {
+                            case 0: // walking in overworld
+                                overworldUpdate();
+                                System.out.println("curr pos x:" +character_location.x +
+                                        "y:" + character_location.y);
 
-                        //xp ++;
-                        //display_xp.setText(toString().valueOf(xp));
-                        Thread.sleep(1000); //wait a second each loop
+                            break;
+                            case 1: // found a fight
+                                isGameRunning = false;
+                            break;
+                            case 2:
+                            break;
+                            case 3:
+                            break;
+                            default:
+                            break;
+                        }
+
+                        Thread.sleep(1500); //wait 1.5 seconds each loop
                     }
 
-                    System.out.println("out of the thread, state: "+ currState);
                 }
                 catch (InterruptedException e) {
 
                 }
             }
         };
+        currState = 0;
+        isGameRunning = true;
 
         my_thread.start();
         mainGameLoop.start();
 
+        System.out.println("out of loop");
 
 
         //tzp_object.tile_controller();
@@ -296,6 +319,22 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     @Override
     public void onNumbersOfTilesConnected(final int i)
     {
+        
+    }
+
+    private void overworldUpdate(){ // gets called everytick while in currState = 0
+        if (character_location.x == 2 && character_location.y == 3){ // if we find a boss
+            enterBattle();
+        }
+        System.out.println("loop");
+    }
+
+    private void enterBattle(){
+        currState = 1; //currstate1 = battle, this might not be necessary
+        Intent start_game_intent = new Intent(GameActivity.this, BattleActivity.class);
+        startActivity(start_game_intent);
+
+        System.out.println("back from battle, need to update user xp or death\nand return to game loop");
 
     }
 
