@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#3BB9FF"
+    tools:context=".GameActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="XP"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="10dp"
+        android:id="@+id/xp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="false"
+        android:layout_toRightOf="@id/xp"
+        android:id="@+id/xp_value"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Health"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="10dp"
+        android:id="@+id/health"
+        android:layout_below="@id/xp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="false"
+        android:layout_below="@id/xp"
+        android:layout_toRightOf="@id/health"
+        android:id="@+id/health_value"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Attack"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="10dp"
+        android:id="@+id/attack"
+        android:layout_below="@id/health"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="false"
+        android:layout_below="@id/health"
+        android:layout_toRightOf="@id/attack"
+        android:id="@+id/attack_value"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Defence"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="10dp"
+        android:id="@+id/defence"
+        android:layout_below="@id/attack"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="false"
+        android:layout_below="@id/attack"
+        android:layout_toRightOf="@id/defence"
+        android:id="@+id/defence_value"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="You are at"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:id="@+id/position"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="X = "
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_marginRight="25dp"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="350dp"
+        android:layout_below="@id/position"
+        android:id="@+id/x_position"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Y = "
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_marginLeft="25dp"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="350dp"
+        android:layout_below="@id/position"
+        android:id="@+id/y_position"/>
+
+</RelativeLayout>

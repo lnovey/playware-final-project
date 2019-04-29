@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#3BB9FF"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The Zorkian Plane"
+        android:textSize="50sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="150dp"
+        android:id="@+id/game_title"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The rules of the game are as follows:"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/game_title"
+        android:id="@+id/rules_1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Travel through a 20*20 world"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/rules_1"
+        android:id="@+id/rules_2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="while collecting power-ups and XP points."
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/rules_2"
+        android:id="@+id/rules_3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The game has 3 levels."
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/rules_3"
+        android:id="@+id/rules_4"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To pass each level you must"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/rules_4"
+        android:id="@+id/rules_5"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="defeat your nemesis in battle."
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/rules_5"
+        android:id="@+id/rules_6"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click on the Start Pairing button"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/rules_6"
+        android:id="@+id/rules_7"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="to establish connection to the Moto Tiles"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/rules_7"
+        android:id="@+id/rules_8"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Then click on the Play Game button to start playing"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="30dp"
+        android:layout_below="@id/rules_8"
+        android:id="@+id/rules_9"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Start Pairing"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:background="#FDEEF4"
+        android:textAllCaps="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="30dp"
+        android:layout_below="@id/rules_9"
+        android:id="@+id/pairing_button" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Play Game"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:background="#FDEEF4"
+        android:textAllCaps="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/pairing_button"
+        android:id="@+id/play_button"
+        android:onClick="play_game_button"/>
+    
+</RelativeLayout>
