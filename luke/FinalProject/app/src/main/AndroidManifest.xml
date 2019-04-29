@@ -11,7 +11,16 @@
         android:theme="@style/AppTheme">
         <activity android:name=".BattleActivity"></activity>
         <activity android:name=".PathAlgorithmActivity" />
+
         <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".GameActivity" />
+        <activity android:name=".MainActivity_fight_sim">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
