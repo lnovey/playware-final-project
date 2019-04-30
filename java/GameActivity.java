@@ -24,8 +24,8 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
     //the state of the game loop
     //0 = in main overworld, walking around
-    //1 = encountered battle
-    // 2 = in battle
+    //1 = encountered battle (and still in it)
+    // 2 = finished battle
     private int currState;
 
     //boolean to run game loop
@@ -36,6 +36,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     int health = 5;
     int attack = 5;
     int defence = 5;
+    int numFought = 0;
 
     // Boosts for character vitals
     int xp_boost = 0;
@@ -47,8 +48,61 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     TextView update_position_x;// = findViewById(R.id.x_position);
     TextView update_position_y;// = findViewById(R.id.y_position);
 
+    //the users character
+    HumanCharacter player; // = new HumanCharacter()
+
+    //the enemies
+    AICharacter[] enemies;
+
     //creating buttons for simulation use
     public Button leftButton, rightButton, upButton, downButton;
+
+
+    Thread mainGameLoop = new Thread(){
+
+        @Override
+        public void run()
+        {
+            try {
+                while (isGameRunning){
+
+                    switch (currState) {
+                        case 0: // walking in overworld
+                            overworldUpdate();
+                            System.out.println("curr pos x:" +character_location.x +
+                                    "y:" + character_location.y);
+
+                            break;
+                        case 1: // found a fight
+                            //isGameRunning = false;
+                            Thread.sleep(10000);
+                            System.out.println("please wait, fight is processing");
+                            break;
+                        case 2: // battle is over, lets update and get back to main loop
+                            System.out.println("back from battle lets go back to updating");
+                            currState = 0;
+                            nx();
+                            break;
+                        case 3:
+                            break;
+                        case 17:
+                            Thread.sleep(4000);
+                            System.out.println("case 17!");
+                            break;
+                        default:
+                            break;
+                    }
+
+                    Thread.sleep(1500); //wait 1.5 seconds each loop
+                }
+
+            }
+            catch (InterruptedException e) {
+
+            }
+        }
+    };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -90,6 +144,17 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         display_health.setText(toString().valueOf(health));
         display_attack.setText(toString().valueOf(attack));
         display_defence.setText(toString().valueOf(defence));
+
+
+        //bulky boy or destructive dude or genuine guy or sketchy specimen?
+        //Todo
+        //create user char for real
+        //finalize attack options
+        //make multiple ai characters
+        //come up with some creative names and sayings
+        //user level up after battle
+
+        characterSetup();
 
 
         leftButton.setOnClickListener(new View.OnClickListener()
@@ -224,48 +289,14 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         };
 
 
-        Thread mainGameLoop = new Thread(){
 
-            @Override
-            public void run()
-            {
-                try {
-                    while (isGameRunning){
-
-                        switch (currState) {
-                            case 0: // walking in overworld
-                                overworldUpdate();
-                                System.out.println("curr pos x:" +character_location.x +
-                                        "y:" + character_location.y);
-
-                            break;
-                            case 1: // found a fight
-                                isGameRunning = false;
-                            break;
-                            case 2:
-                            break;
-                            case 3:
-                            break;
-                            default:
-                            break;
-                        }
-
-                        Thread.sleep(1500); //wait 1.5 seconds each loop
-                    }
-
-                }
-                catch (InterruptedException e) {
-
-                }
-            }
-        };
         currState = 0;
         isGameRunning = true;
 
         my_thread.start();
         mainGameLoop.start();
 
-        System.out.println("out of loop");
+        System.out.println("FLAG A: OUT OF LOOP");
 
 
         //tzp_object.tile_controller();
@@ -319,22 +350,59 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     @Override
     public void onNumbersOfTilesConnected(final int i)
     {
-        
+
     }
 
     private void overworldUpdate(){ // gets called everytick while in currState = 0
         if (character_location.x == 2 && character_location.y == 3){ // if we find a boss
             enterBattle();
         }
-        System.out.println("loop");
+        System.out.println("overworld update");
+    }
+
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        System.out.println("return from activity with result");
+
+        if (requestCode == 17){
+
+            //if result is 7 continue
+            if(resultCode == 7){
+                System.out.println("made it back with finish");
+                currState = 0;
+
+            } else {
+                System.out.println("back wrong");
+            }
+            battleOver();
+        }
+
+    }
+
+    private void battleOver(){ //do some xp gaining, update some we won battle stuff,
+        // and get loop going again
+        numFought++;
+        currState = 2;
+        //System.out.println("back from battle");
+        System.out.println("battle over and hopefully restarting thread ");
+
     }
 
     private void enterBattle(){
         currState = 1; //currstate1 = battle, this might not be necessary
         Intent start_game_intent = new Intent(GameActivity.this, BattleActivity.class);
-        startActivity(start_game_intent);
+        start_game_intent.putExtra("enemyFighter", enemies[numFought]);
+        start_game_intent.putExtra("playerFighter", player);
+        startActivityForResult(start_game_intent,17);
+        System.out.println("just sent activity to battle, lets keep this thread going");
 
-        System.out.println("back from battle, need to update user xp or death\nand return to game loop");
+
+        //System.out.println("back from battle, need to update user xp or death\nand return to game loop");
+        //currState = 0;
 
     }
 
@@ -401,6 +469,42 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                 update_position_y.setText(toString().valueOf(character_location.y));
             }
         });
+    }
+
+    private void characterSetup(){
+        //this should change based on users choice of char
+        player = new HumanCharacter(10,1,4,3,0);
+        player.weaponAttack = 1;
+
+        //this should change based on difficulty selected
+        enemies = new AICharacter[3];
+        //first enemy has 8-12 health, 2 atk, 4 def, lvl 1
+        enemies[0] = new AICharacter((int) (Math.random() * 5) + 8, 1,
+                2,4,0);
+        //second enemy has 16-21 health, 9-11 atk, 6 def, lvl 3
+        enemies[1] = new AICharacter((int) (Math.random() * 6) + 16, 3,
+                (int) (Math.random() * 3) + 9, 6, 0);
+        //third enemy has 20-35 health, 14-15 atk, 15-19 def, lvl 5
+        enemies[2] = new AICharacter((int) (Math.random() * 16) + 20, 6,
+                (int) (Math.random() * 2) + 14, (int) (Math.random() * 5) + 15,
+                0);
+
+        enemies[0].weaponAttack = 1;
+        enemies[1].weaponAttack = 3;
+        enemies[2].weaponAttack = 5;
+
+        enemies[0].intelligence = 0;
+        enemies[1].intelligence=1;
+        enemies[2].intelligence=2;
+
+        enemies[1].numHeals = 1;
+        enemies[2].numHeals = 3;
+
+        enemies[0].maxHealth = enemies[0].health;
+        enemies[1].maxHealth = enemies[1].health;
+        enemies[2].maxHealth = enemies[2].health;
+
+
     }
 
 }

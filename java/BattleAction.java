@@ -6,5 +6,6 @@ public class BattleAction {
     int[] info = new int[5]; //provides info related to the type of action taken
     //ie if type is attack, info is: character attacking, character attacked, damage,
     //if item info is: character using, inventory slot
+    //if type is heal info is: heal amount
 
 }
