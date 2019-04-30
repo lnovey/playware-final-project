@@ -1,0 +1,246 @@
+diff --git a/Rishav/The_Zorkian_Plane/Java/GameActivity.java b/Rishav/The_Zorkian_Plane/Java/GameActivity.java
+index f308f45..18a1e0b 100644
+--- a/Rishav/The_Zorkian_Plane/Java/GameActivity.java
++++ b/Rishav/The_Zorkian_Plane/Java/GameActivity.java
+@@ -5,7 +5,6 @@ import android.graphics.Point;
+ import android.os.Handler;
+ import android.support.v7.app.AppCompatActivity;
+ import android.os.Bundle;
+-import android.util.Log;
+ import android.widget.TextView;
+ 
+ import com.livelife.motolibrary.AntData;
+@@ -22,14 +21,14 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
+ 
+     TZP_Game tzp_object = new TZP_Game(); // Creating the game object
+ 
+-    Point character_location = tzp_object.character_location; // Holds the location of the character
++    //Point character_location = new Point(tzp_object.character_start_x, tzp_object.character_start_y); // Stores the location of our character
++    Point character_location = tzp_object.character_location;
+ 
+-    // Array that holds the details about the character's vital signs
+-    // Index 0 -> XP points
+-    // Index 1 -> Health
+-    // Index 2 -> Attack
+-    // Index 3 -> Defence
+-    int[] vital_signs_array = new int[4];
++    // Initial values for the character's vital signs
++    int xp = 5;
++    int health = 5;
++    int attack = 5;
++    int defence = 5;
+ 
+     // Boosts for character vitals
+     int xp_boost = 0;
+@@ -43,8 +42,6 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
+ 
+     String seven_moves = "\0"; // We use this string to check when seven moves are over
+ 
+-    String power_up_name = "\0"; // Stores the name of the power up
+-
+     @Override
+     protected void onCreate(Bundle savedInstanceState)
+     {
+@@ -78,20 +75,15 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
+         final TextView game_level = findViewById(R.id.level_number);
+         final TextView game_over_message = findViewById(R.id.level);
+ 
+-        final TextView power_up_message = findViewById(R.id.power_up_received);
+-        final TextView new_power_up = findViewById(R.id.power_up_name);
+-
+         // Showing the initial location of our character on the screen
+         update_position_x.setText(toString().valueOf(character_location.x));
+         update_position_y.setText(toString().valueOf(character_location.y));
+ 
+-        vital_signs_array = tzp_object.set_up_vital_signs(vital_signs_array);
+-
+         // Showing the initial vital signs on the screen
+-        display_xp.setText(toString().valueOf(vital_signs_array[0]));
+-        display_health.setText(toString().valueOf(vital_signs_array[1]));
+-        display_attack.setText(toString().valueOf(vital_signs_array[2]));
+-        display_defence.setText(toString().valueOf(vital_signs_array[3]));
++        display_xp.setText(toString().valueOf(xp));
++        display_health.setText(toString().valueOf(health));
++        display_attack.setText(toString().valueOf(attack));
++        display_defence.setText(toString().valueOf(defence));
+ 
+         // Displaying the initial level on the screen
+         game_level.setText(toString().valueOf(current_level));
+@@ -227,27 +219,10 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
+                                 //connection.setAllTilesIdle(AntData.LED_COLOR_OFF);
+                                 //tzp_object.tile_controller();
+ 
+-                                if (seven_moves.equals("true")) // This block is executed once every 7 moves of the character
++                                if (seven_moves.equals("true"))
+                                 {
+-                                    // Updating the location of the power-up on the screen
+                                     power_up_x.setText(toString().valueOf(tzp_object.power_up_location.x));
+                                     power_up_y.setText(toString().valueOf(tzp_object.power_up_location.y));
+-
+-                                    power_up_name = tzp_object.power_up_generator(); // Generating a power-up randomly
+-                                }
+-
+-                                Log.v("Game","x character:" + character_location.x);
+-                                Log.v("Game","y character:" + character_location.y);
+-
+-                                Log.v("Game","x power up:" + tzp_object.power_up_location.x);
+-                                Log.v("Game","y power up:" + tzp_object.power_up_location.y);
+-
+-                                if (character_location.x == tzp_object.power_up_location.x && character_location.y == tzp_object.power_up_location.y)
+-                                {
+-                                    System.out.println("You are at the power-up location");
+-                                    power_up_message.setText("You received:");
+-
+-                                    new_power_up.setText(power_up_name);
+                                 }
+ 
+                                 // Condition for switching to the next level
+diff --git a/Rishav/The_Zorkian_Plane/Java/TZP_Game.java b/Rishav/The_Zorkian_Plane/Java/TZP_Game.java
+index 8c028f7..70aecf6 100644
+--- a/Rishav/The_Zorkian_Plane/Java/TZP_Game.java
++++ b/Rishav/The_Zorkian_Plane/Java/TZP_Game.java
+@@ -51,7 +51,7 @@ public class TZP_Game extends Game
+     {
+         setName("TZP Game");
+         setMaxPlayers(1);
+-        GameType gt = new GameType(0, GameType.GAME_TYPE_TIME,300,"1 Player 1 min",1);
++        GameType gt = new GameType(0, GameType.GAME_TYPE_TIME,60,"1 Player 1 min",1);
+         addGameType(gt);
+     }
+ 
+@@ -90,14 +90,12 @@ public class TZP_Game extends Game
+ 
+                 if (movement_log_index == 7)
+                 {
+-                    this.getOnGameEventListener().onGameMessage("true");
+-
+                     // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
+                     // the user has moved along more
+                     // Then a power-up is generated accordingly
+                     moves_count_array = count_moves(character_movement_log);
+                     power_up_location = power_up_location_generator(moves_count_array);
+-
++                    this.getOnGameEventListener().onGameMessage("true");
+ 
+                     // Resetting the index and the array after every 7 moves
+                     // We need to keep overwriting the character_movement_log for every 7 moves
+@@ -115,8 +113,6 @@ public class TZP_Game extends Game
+                 // Resetting the log when the final index is reached
+                 if (movement_log_index == 7)
+                 {
+-                    this.getOnGameEventListener().onGameMessage("true");
+-
+                     // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
+                     // the user has moved along more
+                     // Then a power-up is generated accordingly
+@@ -139,8 +135,6 @@ public class TZP_Game extends Game
+                 // Resetting the log when the final index is reached
+                 if (movement_log_index == 7)
+                 {
+-                    this.getOnGameEventListener().onGameMessage("true");
+-
+                     // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
+                     // the user has moved along more
+                     // Then a power-up is generated accordingly
+@@ -163,8 +157,6 @@ public class TZP_Game extends Game
+                 // Resetting the log when the final index is reached
+                 if (movement_log_index == 7)
+                 {
+-                    this.getOnGameEventListener().onGameMessage("true");
+-
+                     // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
+                     // the user has moved along more
+                     // Then a power-up is generated accordingly
+@@ -205,19 +197,8 @@ public class TZP_Game extends Game
+         }
+     }
+ 
+-    // This function sets up the intial vital signs of the character -> XP, Health, Attack, Defence
+-    public int[] set_up_vital_signs(int[] vital_signs_array)
+-    {
+-        vital_signs_array[0] = 5;
+-        vital_signs_array[1] = 5;
+-        vital_signs_array[2] = 5;
+-        vital_signs_array[3] = 5;
+-
+-        return vital_signs_array;
+-    }
+-
+     // This function provides the magical objects one at a time randomly
+-    public String power_up_generator()
++    public String magical_objects()
+     {
+         int magical_objects = 11; // Stores the number of magical objects
+ 
+@@ -333,10 +314,10 @@ public class TZP_Game extends Game
+             moves_count_array[3] = moves_negative_y;
+         }
+ 
+-        for (int i = 0; i < 4; i++)
++        /*for (int i = 0; i < 4; i++)
+         {
+             Log.v("Game","Moves count:"+moves_count_array[i]);
+-        }
++        }*/
+ 
+         return moves_count_array;
+     }
+diff --git a/Rishav/The_Zorkian_Plane/XML/activity_game.xml b/Rishav/The_Zorkian_Plane/XML/activity_game.xml
+index e2f828c..ed0568a 100644
+--- a/Rishav/The_Zorkian_Plane/XML/activity_game.xml
++++ b/Rishav/The_Zorkian_Plane/XML/activity_game.xml
+@@ -119,7 +119,7 @@
+         android:layout_alignParentRight="true"
+         android:layout_centerInParent="false"
+         android:layout_marginRight="10dp"
+-        android:id="@+id/power_up_location"/>
++        android:id="@+id/power_up"/>
+ 
+     <TextView
+         android:layout_width="wrap_content"
+@@ -131,7 +131,7 @@
+         android:layout_alignParentRight="true"
+         android:layout_centerInParent="false"
+         android:layout_marginRight="120dp"
+-        android:layout_below="@id/power_up_location"
++        android:layout_below="@id/power_up"
+         android:id="@+id/power_up_y"/>
+ 
+     <TextView
+@@ -144,35 +144,10 @@
+         android:layout_alignParentRight="false"
+         android:layout_centerInParent="false"
+         android:layout_marginRight="75dp"
+-        android:layout_below="@id/power_up_location"
++        android:layout_below="@id/power_up"
+         android:layout_toLeftOf="@id/power_up_y"
+         android:id="@+id/power_up_x"/>
+ 
+-    <TextView
+-        android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
+-        android:text="You received:"
+-        android:textSize="30sp"
+-        android:fontFamily="casual"
+-        android:layout_alignParentTop="false"
+-        android:layout_alignParentRight="true"
+-        android:layout_centerInParent="false"
+-        android:layout_marginRight="90dp"
+-        android:layout_below="@id/power_up_x"
+-        android:id="@+id/power_up_received"/>
+-
+-    <TextView
+-        android:layout_width="wrap_content"
+-        android:layout_height="wrap_content"
+-        android:text=""
+-        android:textSize="30sp"
+-        android:fontFamily="casual"
+-        android:layout_alignParentTop="false"
+-        android:layout_alignParentRight="true"
+-        android:layout_centerInParent="false"
+-        android:layout_marginRight="50dp"
+-        android:layout_below="@id/power_up_received"
+-        android:id="@+id/power_up_name"/>
+ 
+     <TextView
+         android:layout_width="wrap_content"
