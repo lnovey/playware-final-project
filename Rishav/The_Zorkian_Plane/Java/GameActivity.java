@@ -1,12 +1,11 @@
-package com.example.finalproject;
+package com.example.tzp;
 
 import android.content.Intent;
 import android.graphics.Point;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.livelife.motolibrary.AntData;
@@ -15,96 +14,36 @@ import com.livelife.motolibrary.OnAntEventListener;
 import com.livelife.motolibrary.Game;
 import com.livelife.motolibrary.MotoConnection;
 
+import static com.livelife.motolibrary.AntData.LED_COLOR_OFF;
+
 public class GameActivity extends AppCompatActivity implements OnAntEventListener
 {
     MotoConnection connection = MotoConnection.getInstance();
 
     TZP_Game tzp_object = new TZP_Game(); // Creating the game object
 
-    //Point character_location = new Point(tzp_object.character_start_x, tzp_object.character_start_y); // Stores the location of our character
     Point character_location = tzp_object.character_location; // Holds the location of the character
 
-    //the state of the game loop
-    //0 = in main overworld, walking around
-    //1 = encountered battle (and still in it)
-    // 2 = finished battle
-    private int currState;
-
-    //boolean to run game loop
-    private boolean isGameRunning;
-
-    // Initial values for the character's vital signs
-    int xp = 5;
-    int health = 5;
-    int attack = 5;
-    int defence = 5;
-    int numFought = 0;
+    // Array that holds the details about the character's vital signs
+    // Index 0 -> XP points
+    // Index 1 -> Health
+    // Index 2 -> Attack
+    // Index 3 -> Defence
+    int[] vital_signs_array = new int[4];
 
     // Boosts for character vitals
     int xp_boost = 0;
     int health_boost = 0;
 
-    String axis = "\0";
+    String axis = "\0"; // Stores which axis we are moving on
 
-    // Textview variables for showing the x and y locations of our character
-    TextView update_position_x;// = findViewById(R.id.x_position);
-    TextView update_position_y;// = findViewById(R.id.y_position);
+    int current_level = 1; // Stores the level number that is character is currently on
 
-    //the users character
-    HumanCharacter player; // = new HumanCharacter()
+    boolean game_end = false; // Boolean that is checked when setting up the tiles as a game controller
 
-    //the enemies
-    AICharacter[] enemies;
+    String seven_moves = "\0"; // We use this string to check when seven moves are over
 
-    //creating buttons for simulation use
-    public Button leftButton, rightButton, upButton, downButton;
-
-
-    Thread mainGameLoop = new Thread(){
-
-        @Override
-        public void run()
-        {
-            try {
-                while (isGameRunning){
-
-                    switch (currState) {
-                        case 0: // walking in overworld
-                            overworldUpdate();
-                            System.out.println("curr pos x:" +character_location.x +
-                                    "y:" + character_location.y);
-
-                            break;
-                        case 1: // found a fight
-                            //isGameRunning = false;
-                            Thread.sleep(10000);
-                            System.out.println("please wait, fight is processing");
-                            break;
-                        case 2: // battle is over, lets update and get back to main loop
-                            System.out.println("back from battle lets go back to updating");
-                            currState = 0;
-                            nx();
-                            break;
-                        case 3:
-                            break;
-                        case 17:
-                            Thread.sleep(4000);
-                            System.out.println("case 17!");
-                            break;
-                        default:
-                            break;
-                    }
-
-                    Thread.sleep(1500); //wait 1.5 seconds each loop
-                }
-
-            }
-            catch (InterruptedException e) {
-
-            }
-        }
-    };
-
+    String power_up_name = "\0"; // Stores the name of the power up
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -121,84 +60,43 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         tzp_object.setSelectedGameType(0);
         tzp_object.startGame();
 
-        //assignning textviews
-        update_position_x = findViewById(R.id.x_position);
-        update_position_y = findViewById(R.id.y_position);
+        // Textview variables for showing the x and y locations of our character
+        final TextView update_position_x = findViewById(R.id.x_position);
+        final TextView update_position_y = findViewById(R.id.y_position);
 
         // Textview variables for the character's vital signs
-        final TextView display_xp = findViewById(R.id.xp_value);
+        TextView display_xp = findViewById(R.id.xp_value);
         TextView display_health = findViewById(R.id.health_value);
         TextView display_attack = findViewById(R.id.attack_value);
         TextView display_defence= findViewById(R.id.defence_value);
 
-        // Button variables for moving the character when no tiles are available
-        upButton = findViewById(R.id.upButton);
-        downButton = findViewById(R.id.downButton);
-        leftButton = findViewById(R.id.leftButton);
-        rightButton = findViewById(R.id.rightButton);
+        // Textview variables for the character's vital signs
+        final TextView power_up_x = findViewById(R.id.power_up_x);
+        final TextView power_up_y = findViewById(R.id.power_up_y);
+
+        // Textview variable for the game level
+        final TextView game_level = findViewById(R.id.level_number);
+        final TextView game_over_message = findViewById(R.id.level);
+
+        final TextView power_up_message = findViewById(R.id.power_up_received);
+        final TextView new_power_up = findViewById(R.id.power_up_name);
 
         // Showing the initial location of our character on the screen
         update_position_x.setText(toString().valueOf(character_location.x));
         update_position_y.setText(toString().valueOf(character_location.y));
 
-        // Showing the initial vital signs
-        display_xp.setText(toString().valueOf(xp));
-        display_health.setText(toString().valueOf(health));
-        display_attack.setText(toString().valueOf(attack));
-        display_defence.setText(toString().valueOf(defence));
+        vital_signs_array = tzp_object.set_up_vital_signs(vital_signs_array);
 
+        // Showing the initial vital signs on the screen
+        display_xp.setText(toString().valueOf(vital_signs_array[0]));
+        display_health.setText(toString().valueOf(vital_signs_array[1]));
+        display_attack.setText(toString().valueOf(vital_signs_array[2]));
+        display_defence.setText(toString().valueOf(vital_signs_array[3]));
 
-        //bulky boy or destructive dude or genuine guy or sketchy specimen?
-        //Todo
-        //create user char for real
-        //finalize attack options
-        //make multiple ai characters
-        //come up with some creative names and sayings
-        //user level up after battle
+        // Displaying the initial level on the screen
+        game_level.setText(toString().valueOf(current_level));
 
-        characterSetup();
-
-
-        leftButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-             nx();
-            }
-
-        } );
-
-        rightButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                px();
-            }
-
-        } );
-
-        upButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                py();
-            }
-
-        } );
-
-        downButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                ny();
-            }
-
-        } );
-
+        // Used to exchange data between the tiles and GameActivity
         tzp_object.setOnGameEventListener(new Game.OnGameEventListener()
         {
             @Override
@@ -214,19 +112,67 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                 switch (axis)
                 {
                     case "px": // Movement along positive X axis
-                        px();
+                        character_location.x += 1; // Taking the character ahead by 1 unit
+                        if (character_location.x > tzp_object.upper_bound) // Condition to keep the character in the bounds of our world
+                        {
+                            character_location.x--;
+                        }
+                        GameActivity.this.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                update_position_x.setText(toString().valueOf(character_location.x)); // Updating the character's new location on the screen
+                            }
+                        });
                         break;
 
                     case "nx": // Movement along negative X axis
-                        nx(); //moved this method to it's own thing for modularity
+                        character_location.x -= 1; // Taking the character behind by 1 unit
+                        if (character_location.x < tzp_object.lower_bound) // Condition to keep the character in the bounds of our world
+                        {
+                            character_location.x++;
+                        }
+                        GameActivity.this.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                update_position_x.setText(toString().valueOf(character_location.x)); // Updating the character's new location on the screen
+                            }
+                        });
                         break;
 
                     case "py": // Movement along positive Y axis
-                        py();
+                        character_location.y += 1; // Taking the character ahead by 1 unit
+                        if (character_location.y > tzp_object.upper_bound) // Condition to keep the character in the bounds of our world
+                        {
+                            character_location.y--;
+                        }
+                        GameActivity.this.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                update_position_y.setText(toString().valueOf(character_location.y)); // Updating the character's new location on the screen
+                            }
+                        });
                         break;
 
                     case "ny": // Movement along negative Y axis
-                        ny();
+                        character_location.y -= 1; // Taking the character behind by 1 unit
+                        if (character_location.y < tzp_object.lower_bound) // Condition to keep the character in the bounds of our world
+                        {
+                            character_location.y++;
+                        }
+                        GameActivity.this.runOnUiThread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                update_position_y.setText(toString().valueOf(character_location.y)); // Updating the character's new location on the screen
+                            }
+                        });
                         break;
                 }
             }
@@ -243,10 +189,12 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
             }
 
+            // Used to keep a track of which axis the character is moving along
             @Override
             public void onGameMessage(String s)
             {
                 axis = s;
+                seven_moves = s;
             }
 
             @Override
@@ -256,29 +204,93 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             }
         });
 
-        // Displaying each colour for a certain period of time (default - 3000 ms)
         Thread my_thread = new Thread()
         {
-            int i = 5; // Loop variable
             @Override
             public void run()
             {
                 try
                 {
-                    while (i >= 0)
+                    while (true)
                     {
-                        Thread.sleep(3000);
+                        Thread.sleep(2500); // Giving a delay of 2.5 seconds before switching to the next level
+                        connection.setAllTilesIdle(AntData.LED_COLOR_OFF); // setTileColor() requires the tiles to be set off before being used
+                        if (game_end == false)
+                        {
+                            tzp_object.tile_controller(); // Setting up the tiles as a controller
+                        }
                         runOnUiThread(new Runnable()
                         {
                             @Override
                             public void run()
                             {
-                                if (i >= 0)
+                                //connection.setAllTilesIdle(AntData.LED_COLOR_OFF);
+                                //tzp_object.tile_controller();
+
+                                if (seven_moves.equals("true")) // This block is executed once every 7 moves of the character
                                 {
-                                    connection.setAllTilesIdle(AntData.LED_COLOR_OFF);
-                                    tzp_object.tile_controller();
+                                    // Updating the location of the power-up on the screen
+                                    power_up_x.setText(toString().valueOf(tzp_object.power_up_location.x));
+                                    power_up_y.setText(toString().valueOf(tzp_object.power_up_location.y));
+
+                                    power_up_name = tzp_object.power_up_generator(); // Generating a power-up randomly
                                 }
-                                i--;
+
+                                Log.v("Game","x character:" + character_location.x);
+                                Log.v("Game","y character:" + character_location.y);
+
+                                Log.v("Game","x power up:" + tzp_object.power_up_location.x);
+                                Log.v("Game","y power up:" + tzp_object.power_up_location.y);
+
+                                if (character_location.x == tzp_object.power_up_location.x && character_location.y == tzp_object.power_up_location.y)
+                                {
+                                    System.out.println("You are at the power-up location");
+                                    power_up_message.setText("You received:");
+
+                                    new_power_up.setText(power_up_name);
+                                }
+
+                                // Condition for switching to the next level
+                                // We proceed to the next level when the character is at the top right corner of the world
+                                if (character_location.x == tzp_object.upper_bound && character_location.y == tzp_object.upper_bound)
+                                {
+                                    // The character location is reset back to the origin at the start of each level
+                                    character_location.x = 0;
+                                    character_location.y = 0;
+
+                                    // Incrementing the level variable to move to the next one
+                                    current_level++;
+
+                                    // Since we have a maximum of 3 levels, the game execution stops at the end of the third
+                                    if (current_level <= 3) // Executes for anything less than or equal to 3 levels
+                                    {
+                                        game_level.setText(toString().valueOf(current_level)); // Updating the level on the screen
+                                        // Updating the locations after resetting them for the new level on the screen
+                                        update_position_x.setText(toString().valueOf(character_location.x));
+                                        update_position_y.setText(toString().valueOf(character_location.y));
+                                    }
+                                    else // Game is over after the end of the third level is reached
+                                    {
+                                        game_end = true;
+                                        game_over_message.setText("Game Over"); // Endgame message
+                                        game_level.setText("");
+
+                                        connection.setAllTilesIdle(LED_COLOR_OFF);
+
+                                        Handler handler = new Handler();
+                                        handler.postDelayed(new Runnable()
+                                        {
+                                            @Override
+                                            public void run()
+                                            {
+                                                // The following lines are executed after a delay of 5 seconds
+                                                // Going back to the MainActivity (The game's homepage) once the user is done playing
+                                                Intent main_activity_intent = new Intent(GameActivity.this, MainActivity.class);
+                                                startActivity(main_activity_intent);
+                                            }
+                                        }, 5000);
+                                    }
+                                }
                             }
                         });
                     }
@@ -290,19 +302,8 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             }
         };
 
-
-
-        currState = 0;
-        isGameRunning = true;
-
         my_thread.start();
-        mainGameLoop.start();
-
-        System.out.println("FLAG A: OUT OF LOOP");
-
-
-        //tzp_object.tile_controller();
-    } //end onCreate
+    }
 
     @Override
     protected void onResume()
@@ -354,159 +355,4 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     {
 
     }
-
-    private void overworldUpdate(){ // gets called everytick while in currState = 0
-        if (character_location.x == 2 && character_location.y == 3){ // if we find a boss
-            enterBattle();
-        }
-        System.out.println("overworld update");
-    }
-
-
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        System.out.println("return from activity with result");
-
-        if (requestCode == 17){
-
-            //if result is 7 continue
-            if(resultCode == 7){
-                System.out.println("made it back with finish");
-                currState = 0;
-
-            } else {
-                System.out.println("back wrong");
-            }
-            battleOver();
-        }
-
-    }
-
-    private void battleOver(){ //do some xp gaining, update some we won battle stuff,
-        // and get loop going again
-        numFought++;
-        currState = 2;
-        //System.out.println("back from battle");
-        System.out.println("battle over and hopefully restarting thread ");
-
-    }
-
-    private void enterBattle(){
-        currState = 1; //currstate1 = battle, this might not be necessary
-        Intent start_game_intent = new Intent(GameActivity.this, BattleActivity.class);
-        start_game_intent.putExtra("enemyFighter", enemies[numFought]);
-        start_game_intent.putExtra("playerFighter", player);
-        startActivityForResult(start_game_intent,17);
-        System.out.println("just sent activity to battle, lets keep this thread going");
-
-
-        //System.out.println("back from battle, need to update user xp or death\nand return to game loop");
-        //currState = 0;
-
-    }
-
-
-    private void nx(){ //updates user location neg x axis
-        character_location.x -= 1;
-        if (character_location.x < tzp_object.lower_bound) // Condition to keep the character in the bounds of our world
-        {
-            character_location.x++;
-        }
-        GameActivity.this.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                update_position_x.setText(toString().valueOf(character_location.x));
-            }
-        });
-    }
-
-    private void px(){ //updates user location pos x axis
-        character_location.x += 1;
-        if (character_location.x > tzp_object.upper_bound) // Condition to keep the character in the bounds of our world
-        {
-            character_location.x--;
-        }
-        GameActivity.this.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                update_position_x.setText(toString().valueOf(character_location.x));
-            }
-        });
-    }
-
-    private void ny(){//updates user location neg y axis
-        character_location.y -= 1;
-        if (character_location.y < tzp_object.lower_bound) // Condition to keep the character in the bounds of our world
-        {
-            character_location.y++;
-        }
-        GameActivity.this.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                update_position_y.setText(toString().valueOf(character_location.y));
-            }
-        });
-    }
-
-    private void py() {//updates user location pos y axis
-        character_location.y += 1;
-        if (character_location.y > tzp_object.upper_bound) // Condition to keep the character in the bounds of our world
-        {
-            character_location.y--;
-        }
-        GameActivity.this.runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                update_position_y.setText(toString().valueOf(character_location.y));
-            }
-        });
-    }
-
-    private void characterSetup(){
-        //this should change based on users choice of char
-        player = new HumanCharacter(10,1,4,3,0);
-        player.weaponAttack = 1;
-
-        //this should change based on difficulty selected
-        enemies = new AICharacter[3];
-        //first enemy has 8-12 health, 2 atk, 4 def, lvl 1
-        enemies[0] = new AICharacter((int) (Math.random() * 5) + 8, 1,
-                2,4,0);
-        //second enemy has 16-21 health, 9-11 atk, 6 def, lvl 3
-        enemies[1] = new AICharacter((int) (Math.random() * 6) + 16, 3,
-                (int) (Math.random() * 3) + 9, 6, 0);
-        //third enemy has 20-35 health, 14-15 atk, 15-19 def, lvl 5
-        enemies[2] = new AICharacter((int) (Math.random() * 16) + 20, 6,
-                (int) (Math.random() * 2) + 14, (int) (Math.random() * 5) + 15,
-                0);
-
-        enemies[0].weaponAttack = 1;
-        enemies[1].weaponAttack = 3;
-        enemies[2].weaponAttack = 5;
-
-        enemies[0].intelligence = 0;
-        enemies[1].intelligence=1;
-        enemies[2].intelligence=2;
-
-        enemies[1].numHeals = 1;
-        enemies[2].numHeals = 3;
-
-        enemies[0].maxHealth = enemies[0].health;
-        enemies[1].maxHealth = enemies[1].health;
-        enemies[2].maxHealth = enemies[2].health;
-
-
-    }
-
 }
