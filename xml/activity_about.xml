@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#3BB9FF"
+    tools:context=".AboutActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="About this game"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="50dp"
+        android:id="@+id/about_title"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Creators"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/about_title"
+        android:id="@+id/creators"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Luke Novey: s186224"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/creators"
+        android:id="@+id/luke"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rishav Bose: s181363"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="20dp"
+        android:layout_below="@id/luke"
+        android:id="@+id/rishav"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The Zorkian Plane is a text based adventure game"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/rishav"
+        android:id="@+id/about_game_line_1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="created by us for the final project for 31375: Playware technology"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="30dp"
+        android:layout_below="@id/about_game_line_1"
+        android:id="@+id/about_game_line_2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contributions"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/about_game_line_2"
+        android:id="@+id/contributions"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ideation of the concept - Rishav"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/contributions"
+        android:id="@+id/contributions_1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Design and development of the app - Rishav"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/contributions_1"
+        android:id="@+id/contributions_2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Character movement logic and setting up the tiles as a controller - Rishav"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/contributions_2"
+        android:id="@+id/contributions_3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Adaptive algorithm to generate power-ups and weapons - Rishav"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/contributions_3"
+        android:id="@+id/contributions_4"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Positioning of enemies - Luke"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/contributions_4"
+        android:id="@+id/contributions_5"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Development of the AI for the fights between the character and the enemies - Luke"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="30dp"
+        android:layout_below="@id/contributions_5"
+        android:id="@+id/contributions_6"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Credits"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/contributions_6"
+        android:id="@+id/credits"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Henrik Hautop Lund - Lecturer"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/credits"
+        android:id="@+id/credits_1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Yanxin Liu - Teaching Assistant"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/credits_1"
+        android:id="@+id/credits_2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Massimiliano Leggieri - Teaching Assistant"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/credits_2"
+        android:id="@+id/credits_3"/>
+
+</RelativeLayout>

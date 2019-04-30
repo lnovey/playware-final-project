@@ -112,6 +112,74 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Power up generated at"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="10dp"
+        android:id="@+id/power_up"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="120dp"
+        android:layout_below="@id/power_up"
+        android:id="@+id/power_up_y"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="-"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="false"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="75dp"
+        android:layout_below="@id/power_up"
+        android:layout_toLeftOf="@id/power_up_y"
+        android:id="@+id/power_up_x"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Level"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="30dp"
+        android:layout_above="@id/position"
+        android:id="@+id/level"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="#"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="30dp"
+        android:layout_above="@id/position"
+        android:layout_toRightOf="@id/level"
+        android:id="@+id/level_number"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="You are at"
         android:textSize="30sp"
         android:fontFamily="casual"
@@ -130,7 +198,7 @@
         android:layout_alignParentTop="false"
         android:layout_alignParentLeft="true"
         android:layout_centerInParent="true"
-        android:layout_marginLeft="350dp"
+        android:layout_marginLeft="335dp"
         android:layout_below="@id/position"
         android:id="@+id/x_position"/>
 
@@ -144,48 +212,8 @@
         android:layout_alignParentTop="false"
         android:layout_alignParentRight="true"
         android:layout_centerInParent="false"
-        android:layout_marginRight="350dp"
+        android:layout_marginRight="335dp"
         android:layout_below="@id/position"
         android:id="@+id/y_position"/>
-
-    <Button
-        android:id="@+id/upButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="150dp"
-        android:layout_marginBottom="200dp"
-        android:text="up" />
-
-    <Button
-        android:id="@+id/downButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="150dp"
-        android:layout_marginBottom="100dp"
-        android:text="down" />
-
-    <Button
-        android:id="@+id/leftButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="250dp"
-        android:layout_marginBottom="150dp"
-        android:text="left" />
-
-    <Button
-        android:id="@+id/rightButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="150dp"
-        android:text="right" />
 
 </RelativeLayout>
