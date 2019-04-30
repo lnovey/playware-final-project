@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import com.livelife.motolibrary.AntData;
@@ -21,14 +22,14 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
     TZP_Game tzp_object = new TZP_Game(); // Creating the game object
 
-    //Point character_location = new Point(tzp_object.character_start_x, tzp_object.character_start_y); // Stores the location of our character
-    Point character_location = tzp_object.character_location;
+    Point character_location = tzp_object.character_location; // Holds the location of the character
 
-    // Initial values for the character's vital signs
-    int xp = 5;
-    int health = 5;
-    int attack = 5;
-    int defence = 5;
+    // Array that holds the details about the character's vital signs
+    // Index 0 -> XP points
+    // Index 1 -> Health
+    // Index 2 -> Attack
+    // Index 3 -> Defence
+    int[] vital_signs_array = new int[4];
 
     // Boosts for character vitals
     int xp_boost = 0;
@@ -41,6 +42,8 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     boolean game_end = false; // Boolean that is checked when setting up the tiles as a game controller
 
     String seven_moves = "\0"; // We use this string to check when seven moves are over
+
+    String power_up_name = "\0"; // Stores the name of the power up
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -75,15 +78,20 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         final TextView game_level = findViewById(R.id.level_number);
         final TextView game_over_message = findViewById(R.id.level);
 
+        final TextView power_up_message = findViewById(R.id.power_up_received);
+        final TextView new_power_up = findViewById(R.id.power_up_name);
+
         // Showing the initial location of our character on the screen
         update_position_x.setText(toString().valueOf(character_location.x));
         update_position_y.setText(toString().valueOf(character_location.y));
 
+        vital_signs_array = tzp_object.set_up_vital_signs(vital_signs_array);
+
         // Showing the initial vital signs on the screen
-        display_xp.setText(toString().valueOf(xp));
-        display_health.setText(toString().valueOf(health));
-        display_attack.setText(toString().valueOf(attack));
-        display_defence.setText(toString().valueOf(defence));
+        display_xp.setText(toString().valueOf(vital_signs_array[0]));
+        display_health.setText(toString().valueOf(vital_signs_array[1]));
+        display_attack.setText(toString().valueOf(vital_signs_array[2]));
+        display_defence.setText(toString().valueOf(vital_signs_array[3]));
 
         // Displaying the initial level on the screen
         game_level.setText(toString().valueOf(current_level));
@@ -219,10 +227,27 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                                 //connection.setAllTilesIdle(AntData.LED_COLOR_OFF);
                                 //tzp_object.tile_controller();
 
-                                if (seven_moves.equals("true"))
+                                if (seven_moves.equals("true")) // This block is executed once every 7 moves of the character
                                 {
+                                    // Updating the location of the power-up on the screen
                                     power_up_x.setText(toString().valueOf(tzp_object.power_up_location.x));
                                     power_up_y.setText(toString().valueOf(tzp_object.power_up_location.y));
+
+                                    power_up_name = tzp_object.power_up_generator(); // Generating a power-up randomly
+                                }
+
+                                Log.v("Game","x character:" + character_location.x);
+                                Log.v("Game","y character:" + character_location.y);
+
+                                Log.v("Game","x power up:" + tzp_object.power_up_location.x);
+                                Log.v("Game","y power up:" + tzp_object.power_up_location.y);
+
+                                if (character_location.x == tzp_object.power_up_location.x && character_location.y == tzp_object.power_up_location.y)
+                                {
+                                    System.out.println("You are at the power-up location");
+                                    power_up_message.setText("You received:");
+
+                                    new_power_up.setText(power_up_name);
                                 }
 
                                 // Condition for switching to the next level

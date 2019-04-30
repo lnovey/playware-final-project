@@ -51,7 +51,7 @@ public class TZP_Game extends Game
     {
         setName("TZP Game");
         setMaxPlayers(1);
-        GameType gt = new GameType(0, GameType.GAME_TYPE_TIME,60,"1 Player 1 min",1);
+        GameType gt = new GameType(0, GameType.GAME_TYPE_TIME,300,"1 Player 1 min",1);
         addGameType(gt);
     }
 
@@ -90,12 +90,14 @@ public class TZP_Game extends Game
 
                 if (movement_log_index == 7)
                 {
+                    this.getOnGameEventListener().onGameMessage("true");
+
                     // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
                     // the user has moved along more
                     // Then a power-up is generated accordingly
                     moves_count_array = count_moves(character_movement_log);
                     power_up_location = power_up_location_generator(moves_count_array);
-                    this.getOnGameEventListener().onGameMessage("true");
+
 
                     // Resetting the index and the array after every 7 moves
                     // We need to keep overwriting the character_movement_log for every 7 moves
@@ -113,6 +115,8 @@ public class TZP_Game extends Game
                 // Resetting the log when the final index is reached
                 if (movement_log_index == 7)
                 {
+                    this.getOnGameEventListener().onGameMessage("true");
+
                     // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
                     // the user has moved along more
                     // Then a power-up is generated accordingly
@@ -135,6 +139,8 @@ public class TZP_Game extends Game
                 // Resetting the log when the final index is reached
                 if (movement_log_index == 7)
                 {
+                    this.getOnGameEventListener().onGameMessage("true");
+
                     // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
                     // the user has moved along more
                     // Then a power-up is generated accordingly
@@ -157,6 +163,8 @@ public class TZP_Game extends Game
                 // Resetting the log when the final index is reached
                 if (movement_log_index == 7)
                 {
+                    this.getOnGameEventListener().onGameMessage("true");
+
                     // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
                     // the user has moved along more
                     // Then a power-up is generated accordingly
@@ -197,8 +205,19 @@ public class TZP_Game extends Game
         }
     }
 
+    // This function sets up the intial vital signs of the character -> XP, Health, Attack, Defence
+    public int[] set_up_vital_signs(int[] vital_signs_array)
+    {
+        vital_signs_array[0] = 5;
+        vital_signs_array[1] = 5;
+        vital_signs_array[2] = 5;
+        vital_signs_array[3] = 5;
+
+        return vital_signs_array;
+    }
+
     // This function provides the magical objects one at a time randomly
-    public String magical_objects()
+    public String power_up_generator()
     {
         int magical_objects = 11; // Stores the number of magical objects
 
@@ -314,10 +333,10 @@ public class TZP_Game extends Game
             moves_count_array[3] = moves_negative_y;
         }
 
-        /*for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             Log.v("Game","Moves count:"+moves_count_array[i]);
-        }*/
+        }
 
         return moves_count_array;
     }
