@@ -1,0 +1,283 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#3BB9FF"
+    tools:context=".InstructionActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Instructions"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="25dp"
+        android:id="@+id/instructions_title"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Controls"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/instructions_title"
+        android:id="@+id/controls"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Press the GREEN tile to move RIGHT"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/controls"
+        android:id="@+id/control_1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Press the BLUE tile to move LEFT"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/control_1"
+        android:id="@+id/controls_2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Press the PINK tile to move UP"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/controls_2"
+        android:id="@+id/controls_3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Press the WHITE tile to move DOWN"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="25dp"
+        android:layout_below="@id/controls_3"
+        android:id="@+id/controls_4"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Levels"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/controls_4"
+        android:id="@+id/levels"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The game has 3 levels"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/levels"
+        android:id="@+id/levels_1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="To proceed to the next level you must defeat the enemy in that level"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/levels_1"
+        android:id="@+id/levels_2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="and take your character to (20,20)"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/levels_2"
+        android:id="@+id/levels_3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The next level will start automatically once you place your character at (20,20)"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/levels_3"
+        android:id="@+id/levels_4"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The starting location of every level is (0,0)"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="25dp"
+        android:layout_below="@id/levels_4"
+        android:id="@+id/levels_5"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="World Constraints"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/levels_5"
+        android:id="@+id/world_constraints"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="The lower and upper limit for each axis is 0 and 20 respectively"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="25dp"
+        android:layout_below="@id/world_constraints"
+        android:id="@+id/world_constraints_1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Weapons and power-ups"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/world_constraints_1"
+        android:id="@+id/weapons_power_ups"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Navigate your character through the world"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/weapons_power_ups"
+        android:id="@+id/weapons_power_ups_1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="to collect weapons and power-ups to battle your enemies"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="25dp"
+        android:layout_below="@id/weapons_power_ups_1"
+        android:id="@+id/weapons_power_ups_2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Battle"
+        android:textSize="25sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="10dp"
+        android:layout_below="@id/weapons_power_ups_2"
+        android:id="@+id/battle"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Battle rules 1"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/battle"
+        android:id="@+id/battle_1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Battle rules 2"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/battle_1"
+        android:id="@+id/battle_2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Battle rules 3"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/battle_2"
+        android:id="@+id/battle_3"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Battle rules 4"
+        android:textSize="20sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/battle_3"
+        android:id="@+id/battle_4"/>
+
+</RelativeLayout>
