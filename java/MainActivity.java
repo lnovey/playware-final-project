@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity  implements OnAntEventListen
                     // Note that every time you start the pairing the id index starts at 1.
                     connection.pairTilesStart();
                     pairing_button.setText("Stop Pairing");
+                    //System.out.println("clicked pairing");
                 }
                 else
                 {

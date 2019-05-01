@@ -84,12 +84,13 @@ public class TZP_Game extends Game
             {
                 this.getOnGameEventListener().onGameMessage("px");
                 incrementPlayerScore(1, 1);
+
                 character_movement_log[movement_log_index] = "px";
-                //Log.v("Game","Log:"+character_movement_log[movement_log_index]);
                 movement_log_index++;
 
                 if (movement_log_index == 7)
                 {
+                    //seven_moves = true;
                     this.getOnGameEventListener().onGameMessage("true");
 
                     // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)

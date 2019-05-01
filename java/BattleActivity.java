@@ -1,6 +1,7 @@
 package com.example.finalproject;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -112,7 +113,7 @@ public class BattleActivity extends AppCompatActivity {
         battleChoices.add("heal");
         isFight = true;
 
-        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, battleChoices);
+        adapter = new ArrayAdapter<String>(BattleActivity.this, android.R.layout.simple_list_item_1, battleChoices);
         listView = (ListView) findViewById(R.id.listView);
 
         listView.setAdapter(adapter);
@@ -220,13 +221,20 @@ public class BattleActivity extends AppCompatActivity {
 
         //need to remove my gui stuff so user can not click on it more
 
+        //returning info about who won the fight!
+        Intent resultIntent = new Intent();
 
         if (player.health <= 0) {
             System.out.println("game over, returning home");
+            resultIntent.putExtra("winner", 2);
+            resultIntent.putExtra("health", 0);
         } else {
             System.out.println("you won the fight,\n gaining xp\n go to next level!");
+            resultIntent.putExtra("winner", 1);
+            resultIntent.putExtra("health", player.health);
         }
 
+        setResult(Activity.RESULT_OK, resultIntent);
         this.finish();
         return;
     }

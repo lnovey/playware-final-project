@@ -34,7 +34,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     private int currState;
 
     //boolean to run game loop
-    private boolean isGameRunning;
+    private boolean isGameRunning, isBossDead;
 
     // Array that holds the details about the character's vital signs
     // Index 0 -> XP points
@@ -89,13 +89,23 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         public void run()
         {
             try {
+
+                Thread.sleep(5000);
+                setupTiles();
+                Thread.sleep(2000);
+
+                //worked with 10,1
+                //failed 1, 1
+                //works with 5,2
                 while (isGameRunning){
+                    setupTiles();
+
 
                     switch (currState) {
                         case 0: // walking in overworld
                             overworldUpdate();
-                            System.out.println("curr pos x:" +character_location.x +
-                                    "y:" + character_location.y);
+                            //System.out.println("curr pos x:" +character_location.x +
+                            //        "y:" + character_location.y);
 
                             break;
                         case 1: // found a fight
@@ -118,7 +128,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                             break;
                     }
 
-                    Thread.sleep(1500); //wait 1.5 seconds each loop
+                    Thread.sleep(300); //wait 1.5 seconds each loop
                 }
 
             }
@@ -198,7 +208,11 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         //come up with some creative names and sayings
         //user level up after battle
 
-        characterSetup();
+
+
+        //here is the main setup method!
+        setupEverything();
+        //characterSetup();
 
 
         leftButton.setOnClickListener(new View.OnClickListener()
@@ -306,16 +320,10 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             @Override
             public void run()
             {
-                try
-                {
+                //try
+                //{
                     while (true)
                     {
-                        Thread.sleep(2500); // Giving a delay of 2.5 seconds before switching to the next level
-                        connection.setAllTilesIdle(LED_COLOR_OFF); // setTileColor() requires the tiles to be set off before being used
-                        if (game_end == false)
-                        {
-                            tzp_object.tile_controller(); // Setting up the tiles as a controller
-                        }
                         runOnUiThread(new Runnable()
                         {
                             @Override
@@ -357,6 +365,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
                                     // Incrementing the level variable to move to the next one
                                     current_level++;
+                                    isBossDead = false;
 
                                     // Since we have a maximum of 3 levels, the game execution stops at the end of the third
                                     if (current_level <= 3) // Executes for anything less than or equal to 3 levels
@@ -391,11 +400,11 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                             }
                         });
                     }
-                }
-                catch (InterruptedException e)
-                {
+                //}
+                //catch (InterruptedException e)
+                //{
 
-                }
+                //}
             }
         };
 
@@ -404,7 +413,9 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         currState = 0;
         isGameRunning = true;
 
-        my_thread.start();
+        //my_thread.start();
+
+
         mainGameLoop.start();
 
         System.out.println("FLAG A: OUT OF LOOP");
@@ -412,6 +423,21 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
         //tzp_object.tile_controller();
     } //end onCreate
+
+    //this method sets up everything that needs to be done once
+    private void setupEverything(){
+        setupTiles();
+        characterSetup();
+    }
+
+    //sets up tile colors
+    private void setupTiles(){
+        connection.setAllTilesIdle(LED_COLOR_OFF); // setTileColor() requires the tiles to be set off before being used
+        tzp_object.tile_controller(); // Setting up the tiles as a controller
+
+
+    }
+
 
     @Override
     protected void onResume()
@@ -465,13 +491,121 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     }
 
     private void overworldUpdate(){ // gets called everytick while in currState = 0
+
+        System.out.println("******UPDATING******");
         if (character_location.x == 2 && character_location.y == 3){ // if we find a boss
             enterBattle();
         }
-        System.out.println("overworld update");
+
+        if (seven_moves.equals("true")) // This block is executed once every 7 moves of the character
+        {
+
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    // Updating the location of the power-up on the screen
+                    power_up_x.setText(toString().valueOf(tzp_object.power_up_location.x));
+                    power_up_y.setText(toString().valueOf(tzp_object.power_up_location.y));
+                }
+            });
+
+            power_up_name = tzp_object.power_up_generator(); // Generating a power-up randomly
+        }
+
+        //Log.v("Game","x character:" + character_location.x);
+        //Log.v("Game","y character:" + character_location.y);
+
+        Log.v("Game","x power up:" + tzp_object.power_up_location.x);
+        Log.v("Game","y power up:" + tzp_object.power_up_location.y);
+
+        if (character_location.x == tzp_object.power_up_location.x && character_location.y == tzp_object.power_up_location.y)
+        {
+            System.out.println("You are at the power-up location");
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    power_up_message.setText("You received:");
+                    new_power_up.setText(power_up_name);
+                }
+            });
+
+        }
+
+        // Condition for switching to the next level
+        // We proceed to the next level when the character is at the top right corner of the world
+        if (character_location.x == tzp_object.upper_bound && character_location.y == tzp_object.upper_bound)
+        {
+            if (isBossDead){
+                endLevel();
+            } else {
+                //character at 20,20 but did not defeat boss
+                System.out.println("at teleporter, need to defeat boss to turn it on!");
+                nx();
+            }
+
+        }
+
+        System.out.println("****** DONE UPDATE ******* \n\n");
+        System.out.println("\n");
     }
 
+    //we've been told the chracter has reached the end of the level so let's update
+    private void endLevel(){
 
+        // The character location is reset back to the origin at the start of each level
+        character_location.x = 0;
+        character_location.y = 0;
+
+        // Incrementing the level variable to move to the next one
+        current_level++;
+
+        // Since we have a maximum of 3 levels, the game execution stops at the end of the third
+        if (current_level <= 3) // Executes for anything less than or equal to 3 levels
+        {
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    game_level.setText(toString().valueOf(current_level)); // Updating the level on the screen
+                    // Updating the locations after resetting them for the new level on the screen
+                    update_position_x.setText(toString().valueOf(character_location.x));
+                    update_position_y.setText(toString().valueOf(character_location.y));
+                }
+            });
+
+        }
+        else // Game is over after the end of the third level is reached
+        {
+            game_end = true;
+
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    game_over_message.setText("Game Over"); // Endgame message
+                    game_level.setText("");
+                }
+            });
+
+
+            connection.setAllTilesIdle(LED_COLOR_OFF);
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    // The following lines are executed after a delay of 5 seconds
+                    // Going back to the MainActivity (The game's homepage) once the user is done playing
+                    Intent main_activity_intent = new Intent(GameActivity.this, MainActivity.class);
+                    startActivity(main_activity_intent);
+                }
+            }, 5000);
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -480,6 +614,22 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         System.out.println("return from activity with result");
 
         if (requestCode == 17){
+
+            if (data.getIntExtra("winner", 0) == 1){
+                //user won
+                player.health = data.getIntExtra("health", 10);
+
+                System.out.println("user won in returned method: " + player.health);
+                isBossDead = true;
+
+                //TODO
+                // update health to screen here?
+                // and xp and stuff maybe call a method
+            } else {
+                //user lost
+
+                System.out.println("user lost in returned method");
+            }
 
             //if result is 7 continue
             if(resultCode == 7){
@@ -532,6 +682,25 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                 update_position_x.setText(toString().valueOf(character_location.x));
             }
         });
+
+        tzp_object.character_movement_log[tzp_object.movement_log_index] = "nx";
+        tzp_object.movement_log_index++;
+
+        if (tzp_object.movement_log_index == 7)
+        {
+            seven_moves = "true";
+            // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
+            // the user has moved along more
+            // Then a power-up is generated accordingly
+            tzp_object.moves_count_array = tzp_object.count_moves(tzp_object.character_movement_log);
+            tzp_object.power_up_location = tzp_object.power_up_location_generator(tzp_object.moves_count_array);
+
+
+            // Resetting the index and the array after every 7 moves
+            // We need to keep overwriting the character_movement_log for every 7 moves
+            tzp_object.movement_log_index = 0;
+            tzp_object.character_movement_log = new String[7];
+        }
     }
 
     private void px(){ //updates user location pos x axis
@@ -548,6 +717,25 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                 update_position_x.setText(toString().valueOf(character_location.x));
             }
         });
+
+        tzp_object.character_movement_log[tzp_object.movement_log_index] = "px";
+        tzp_object.movement_log_index++;
+
+        if (tzp_object.movement_log_index == 7)
+        {
+            seven_moves = "true";
+            // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
+            // the user has moved along more
+            // Then a power-up is generated accordingly
+            tzp_object.moves_count_array = tzp_object.count_moves(tzp_object.character_movement_log);
+            tzp_object.power_up_location = tzp_object.power_up_location_generator(tzp_object.moves_count_array);
+
+
+            // Resetting the index and the array after every 7 moves
+            // We need to keep overwriting the character_movement_log for every 7 moves
+            tzp_object.movement_log_index = 0;
+            tzp_object.character_movement_log = new String[7];
+        }
     }
 
     private void ny(){//updates user location neg y axis
@@ -564,6 +752,25 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                 update_position_y.setText(toString().valueOf(character_location.y));
             }
         });
+
+        tzp_object.character_movement_log[tzp_object.movement_log_index] = "ny";
+        tzp_object.movement_log_index++;
+
+        if (tzp_object.movement_log_index == 7)
+        {
+            seven_moves = "true";
+            // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
+            // the user has moved along more
+            // Then a power-up is generated accordingly
+            tzp_object.moves_count_array = tzp_object.count_moves(tzp_object.character_movement_log);
+            tzp_object.power_up_location = tzp_object.power_up_location_generator(tzp_object.moves_count_array);
+
+
+            // Resetting the index and the array after every 7 moves
+            // We need to keep overwriting the character_movement_log for every 7 moves
+            tzp_object.movement_log_index = 0;
+            tzp_object.character_movement_log = new String[7];
+        }
     }
 
     private void py() {//updates user location pos y axis
@@ -580,6 +787,25 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                 update_position_y.setText(toString().valueOf(character_location.y));
             }
         });
+
+        tzp_object.character_movement_log[tzp_object.movement_log_index] = "py";
+        tzp_object.movement_log_index++;
+
+        if (tzp_object.movement_log_index == 7)
+        {
+            seven_moves = "true";
+            // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
+            // the user has moved along more
+            // Then a power-up is generated accordingly
+            tzp_object.moves_count_array = tzp_object.count_moves(tzp_object.character_movement_log);
+            tzp_object.power_up_location = tzp_object.power_up_location_generator(tzp_object.moves_count_array);
+
+
+            // Resetting the index and the array after every 7 moves
+            // We need to keep overwriting the character_movement_log for every 7 moves
+            tzp_object.movement_log_index = 0;
+            tzp_object.character_movement_log = new String[7];
+        }
     }
 
     private void characterSetup(){
