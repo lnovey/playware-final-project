@@ -5,7 +5,6 @@ import android.graphics.Point;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.TextView;
 
 import com.livelife.motolibrary.AntData;
@@ -32,6 +31,14 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     // Index 3 -> Defence
     int[] vital_signs_array = new int[4];
 
+    // Array that holds the details about the power-ups
+    // Index 0 -> Name of the power-up
+    // Index 1 -> XP points gained
+    // Index 2 -> Health points gained
+    // Index 3 -> Attack points gained
+    // Index 4 -> Attack points gained
+    String[] power_up_details = new String[5];
+
     // Boosts for character vitals
     int xp_boost = 0;
     int health_boost = 0;
@@ -39,18 +46,19 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     int defence_boost = 0;
 
     int health_cap = 30; // Maximum limit for health
+    int initial_xp = 0; // Stores the initial XP points at the start of every level
+
+    // XP threshold points for each level
+    int level_one_xp_threshold = 10;
+    int level_two_xp_threshold = 20;
+    int level_three_xp_threshold = 40;
 
     String axis = "\0"; // Stores which axis we are moving on
-
-    //int current_level = 1; // Stores the level number that is character is currently on
+    String seven_moves = "\0"; // We use this string to check when seven moves are over
+    String power_up_name = "\0"; // Stores the name of the power up
+    String power_up_comments = "\0"; // Holds comments for corresponding power-ups
 
     boolean game_end = false; // Boolean that is checked when setting up the tiles as a game controller
-
-    String seven_moves = "\0"; // We use this string to check when seven moves are over
-
-    String power_up_name = "\0"; // Stores the name of the power up
-
-    String[] power_up_details = new String[5];
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -88,6 +96,18 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         // Textview variables for displaying the power-ups
         final TextView power_up_message = findViewById(R.id.power_up_received);
         final TextView new_power_up = findViewById(R.id.power_up_name);
+
+        // Textview variable for displaying the power-up comments
+        final TextView power_up_tagline = findViewById(R.id.power_up_comment);
+
+        // Textview variable for displaying the full health message
+        final TextView full_health_text = findViewById(R.id.full_health_message);
+
+        // Textview variables for the boss location
+        final TextView boss = findViewById(R.id.fight_the_boss);
+        final TextView boss_message = findViewById(R.id.go_to_the_boss);
+        final TextView boss_x = findViewById(R.id.boss_location_x);
+        final TextView boss_y = findViewById(R.id.boss_location_y);
 
         // Showing the initial location of our character on the screen
         update_position_x.setText(toString().valueOf(character_location.x));
@@ -212,6 +232,8 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             }
         });
 
+        initial_xp = vital_signs_array[0]; // Updating the initial XP for the first level
+
         Thread my_thread = new Thread()
         {
             @Override
@@ -221,31 +243,78 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                 {
                     while (true)
                     {
-                        Thread.sleep(300); // Giving a delay of 2.5 seconds before switching to the next level
+                        Thread.sleep(300);
+
                         connection.setAllTilesIdle(AntData.LED_COLOR_OFF); // setTileColor() requires the tiles to be set off before being used
                         if (game_end == false)
                         {
                             tzp_object.tile_controller(); // Setting up the tiles as a controller
                         }
+
                         runOnUiThread(new Runnable()
                         {
                             @Override
                             public void run()
                             {
-                                //connection.setAllTilesIdle(AntData.LED_COLOR_OFF);
-                                //tzp_object.tile_controller();
-
                                 if (seven_moves.equals("true")) // This block is executed once every 7 moves of the character
                                 {
                                     // Updating the location of the power-up on the screen
                                     power_up_x.setText(toString().valueOf(tzp_object.power_up_location.x));
                                     power_up_y.setText(toString().valueOf(tzp_object.power_up_location.y));
 
-                                    power_up_details = tzp_object.power_up_generator(); // Generating a power-up randomly
+                                    int delta_xp = vital_signs_array[0] - initial_xp; // Keeps track of the change in XP points gained in each level
+
+                                    switch (tzp_object.current_level)
+                                    {
+                                        case 1: // Generating the power-ups for level 1
+                                            if (delta_xp <= level_one_xp_threshold)
+                                            {
+                                                power_up_details = tzp_object.power_up_generator(); // Generating a power-up randomly
+                                            }
+                                            else
+                                            {
+                                                boss.setText("You will fight you nemesis for this level");
+                                                boss_message.setText("Go to:");
+                                                boss_x.setText(toString().valueOf(10));
+                                                boss_y.setText(toString().valueOf(10));
+                                            }
+                                            break;
+
+                                        case 2: // Generating the power-ups for level 2
+                                            if (vital_signs_array[0] - initial_xp <= level_two_xp_threshold)
+                                            {
+                                                power_up_details = tzp_object.power_up_generator(); // Generating a power-up randomly
+                                            }
+                                            else
+                                            {
+                                                boss.setText("You will fight you nemesis for this level");
+                                                boss_message.setText("Go to:");
+                                                boss_x.setText(toString().valueOf(10));
+                                                boss_y.setText(toString().valueOf(10));
+                                            }
+                                            break;
+
+                                        case 3: // Generating the power-ups for level 3
+                                            if (vital_signs_array[0] - initial_xp <= level_three_xp_threshold)
+                                            {
+                                                power_up_details = tzp_object.power_up_generator(); // Generating a power-up randomly
+                                            }
+                                            else
+                                            {
+                                                boss.setText("You will fight you nemesis for this level");
+                                                boss_message.setText("Go to:");
+                                                boss_x.setText(toString().valueOf(10));
+                                                boss_y.setText(toString().valueOf(10));
+                                            }
+                                            break;
+                                    }
+
+
                                 }
 
                                 if (character_location.x == tzp_object.power_up_location.x && character_location.y == tzp_object.power_up_location.y)
                                 {
+                                    // Updating the power-up messages on the screen
                                     System.out.println("You are at the power-up location");
                                     power_up_message.setText("You received:");
 
@@ -256,15 +325,23 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                                     attack_boost = parseInt(power_up_details[3]);
                                     defence_boost = parseInt(power_up_details[4]);
 
+                                    if (power_up_name.equals("Fawke's the Pheonix"))
+                                    {
+                                        full_health_text.setText("FULL HEALTH BOOST!!!"); // Displaying the full health message
+                                    }
+
+                                    power_up_comments = weapon_comments(power_up_name); // Generating a comment for the power-up received
+
                                     // Updating each element of the vital signs array (XP, Health, Attack, Defence)
                                     vital_signs_array[0] = vital_signs_array[0] + xp_boost;
                                     vital_signs_array[1] = vital_signs_array[1] + health_boost;
+                                    vital_signs_array[2] = vital_signs_array[2] + attack_boost;
+                                    vital_signs_array[3] = vital_signs_array[3] + defence_boost;
+
                                     if (vital_signs_array[1] > health_cap) // Making sure that the health of the character does not exceed the limit
                                     {
                                         vital_signs_array[1] = 30;
                                     }
-                                    vital_signs_array[2] = vital_signs_array[2] + attack_boost;
-                                    vital_signs_array[3] = vital_signs_array[3] + defence_boost;
 
                                     // Updating the vital signs on the screen
                                     new_power_up.setText(power_up_name);
@@ -272,6 +349,8 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                                     display_health.setText(toString().valueOf(vital_signs_array[1]));
                                     display_attack.setText(toString().valueOf(vital_signs_array[2]));
                                     display_defence.setText(toString().valueOf(vital_signs_array[3]));
+
+                                    power_up_tagline.setText(power_up_comments); // Updating the comment for the power-up on the screen
 
                                     tzp_object.reset_power_up();
                                 }
@@ -284,8 +363,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                                     character_location.x = 0;
                                     character_location.y = 0;
 
-                                    // Incrementing the level variable to move to the next one
-                                    tzp_object.current_level++;
+                                    tzp_object.current_level++; // Incrementing the level variable to move to the next one
 
                                     // Since we have a maximum of 3 levels, the game execution stops at the end of the third
                                     if (tzp_object.current_level <= 3) // Executes for anything less than or equal to 3 levels
@@ -303,24 +381,32 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                                         attack_boost = 0;
                                         defence_boost = 0;
 
-                                        // Resetting the power-up name on the screen
+                                        initial_xp = vital_signs_array[0]; // Resetting the initial XP value at the beginning of every level to the XP points at the start of that level
+
+                                        // Resetting the power-up name, location and comment on the screen
                                         power_up_x.setText("-");
                                         power_up_y.setText("-");
                                         power_up_message.setText("");
                                         new_power_up.setText("");
+                                        power_up_tagline.setText("");
 
-                                        // Resetting the movement log its index at the beginning of every level
+                                        // Resetting the movement log and its index at the beginning of every level
                                         tzp_object.movement_log_index = 0;
                                         tzp_object.character_movement_log = new String[7];
-                                        Log.v("Game","Movement index:"+tzp_object.movement_log_index);
+
+                                        // Resetting the boss details at the beginning of every level
+                                        boss.setText("");
+                                        boss_message.setText("");
+                                        boss_x.setText("");
+                                        boss_y.setText("");
                                     }
                                     else // Game is over after the end of the third level is reached
                                     {
-                                        game_end = true;
+                                        game_end = true; // To switch off the tiles as game controller
                                         game_over_message.setText("Game Over"); // Endgame message
                                         game_level.setText("");
 
-                                        connection.setAllTilesIdle(LED_COLOR_OFF);
+                                        connection.setAllTilesIdle(LED_COLOR_OFF); // Switching off all the tiles
 
                                         Handler handler = new Handler();
                                         handler.postDelayed(new Runnable()
@@ -399,5 +485,87 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     public void onNumbersOfTilesConnected(final int i)
     {
 
+    }
+
+    // This function generates tag lines for every weapon
+    public String weapon_comments(String weapon_name)
+    {
+        String comment = "\0"; // Holds the comment that will be made for that power-up
+        switch (weapon_name)
+        {
+            case "The Sorting Hat":
+                comment = "Which house should I put you in?";
+                break;
+
+            case "Deadpool's Sword":
+                comment = "Maximum effort!!!";
+                break;
+
+            case "Web Cartridges and Shooters":
+                comment = "I am Spider-Man!";
+                break;
+
+            case "Iron Man's Arc Reactor":
+                comment = "I am Iron-Man";
+                break;
+
+            case "Captain America's Shield":
+                comment = "I could do this all day";
+                break;
+
+            case "Adamantium Claws":
+                comment = "I'll cut you bub";
+                break;
+
+            case "Hawkeye's Bow and Arrow":
+                comment = "I don't seem to miss";
+                break;
+
+            case "The Symbiote Suit":
+                comment = "We are Venom!!!";
+                break;
+
+            case "The Pym Particle":
+                comment = "Now where's Anthony??!";
+                break;
+
+            case "The War Machine Suit":
+                comment = "Second Iron-Man??!";
+                break;
+
+            case "The Hulkbuster Suit":
+                comment = "Is Hulk Iron-Man now?!";
+                break;
+
+            case "Thor's Mjölnir":
+                comment = "Odin deems you worthy";
+                break;
+
+            case "Mar-Vell's Nega-Bands":
+                comment = "You are now cosmically aware";
+                break;
+
+            case "The Sword of Gryffindor":
+                comment = "You are a worthy Gryffindor";
+                break;
+
+            case "The Bleeding Edge Suit":
+                comment = "It's Nanotech. Do you like it?";
+                break;
+
+            case "The Eye of Agamotto":
+                comment = "I now possess the time stone";
+                break;
+
+            case "The Stormbreaker":
+                comment = "This is Thanos killing kind of a weapon";
+                break;
+
+            case "Fawke's the Pheonix":
+                comment = "Rise from the ashes";
+                break;
+        }
+
+        return comment;
     }
 }
