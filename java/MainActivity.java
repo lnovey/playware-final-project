@@ -129,4 +129,18 @@ public class MainActivity extends AppCompatActivity  implements OnAntEventListen
         Intent start_game_intent = new Intent(MainActivity.this, GameActivity.class);
         startActivity(start_game_intent);
     }
+
+    // This function is called when the About Game button is pressed
+    public void about_game_button(View view)
+    {
+        Intent about_game_intent = new Intent(MainActivity.this, AboutActivity.class);
+        startActivity(about_game_intent);
+    }
+
+    // This function is called when the Instructions button is pressed
+    public void see_instructions_button(View view)
+    {
+        Intent instructions_intent = new Intent(MainActivity.this, InstructionActivity.class);
+        startActivity(instructions_intent);
+    }
 }
