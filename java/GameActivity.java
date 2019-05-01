@@ -146,6 +146,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                             //nx();
                             break;
                         case 3:
+                            isGameRunning = false;
                             break;
                         case 17:
                             Thread.sleep(4000);
@@ -628,6 +629,13 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
             connection.setAllTilesIdle(LED_COLOR_OFF);
 
+            // Going back to the MainActivity (The game's homepage) once the user is done playing
+            Intent main_activity_intent = new Intent(GameActivity.this, MainActivity.class);
+            startActivity(main_activity_intent);
+            currState = 3;
+
+
+            /*
             Handler handler = new Handler();
             handler.postDelayed(new Runnable()
             {
@@ -640,6 +648,8 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                     startActivity(main_activity_intent);
                 }
             }, 5000);
+
+            */
         }
     }
 
@@ -852,6 +862,11 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         Random rand = new Random();
         int xdist = rand.nextInt(7) + 3;
                 //(int) (Math.random() * 7) + 3;
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         int ydist = rand.nextInt(7) + 3;
                 //(int) (Math.random() * 7) + 3;
 
