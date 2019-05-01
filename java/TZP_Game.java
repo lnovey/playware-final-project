@@ -84,99 +84,21 @@ public class TZP_Game extends Game
             {
                 this.getOnGameEventListener().onGameMessage("px");
                 incrementPlayerScore(1, 1);
-
-                character_movement_log[movement_log_index] = "px";
-                movement_log_index++;
-
-                if (movement_log_index == 7)
-                {
-                    //seven_moves = true;
-                    this.getOnGameEventListener().onGameMessage("true");
-
-                    // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
-                    // the user has moved along more
-                    // Then a power-up is generated accordingly
-                    moves_count_array = count_moves(character_movement_log);
-                    power_up_location = power_up_location_generator(moves_count_array);
-
-
-                    // Resetting the index and the array after every 7 moves
-                    // We need to keep overwriting the character_movement_log for every 7 moves
-                    movement_log_index = 0;
-                    character_movement_log = new String[7];
-                }
             }
             else if (colour == LED_COLOR_BLUE) // Left (Negative X axis)
             {
                 this.getOnGameEventListener().onGameMessage("nx");
                 incrementPlayerScore(0, 1);
-                character_movement_log[movement_log_index] = "nx";
-                //Log.v("Game","Log:"+character_movement_log[movement_log_index]);
-                movement_log_index++;
-                // Resetting the log when the final index is reached
-                if (movement_log_index == 7)
-                {
-                    this.getOnGameEventListener().onGameMessage("true");
-
-                    // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
-                    // the user has moved along more
-                    // Then a power-up is generated accordingly
-                    moves_count_array = count_moves(character_movement_log);
-                    power_up_location = power_up_location_generator(moves_count_array);
-
-                    // Resetting the index and the array after every 7 moves
-                    // We need to keep overwriting the character_movement_log for every 7 moves
-                    movement_log_index = 0;
-                    character_movement_log = new String[7];
-                }
             }
             else if (colour == LED_COLOR_VIOLET) // Up (Positive Y axis)
             {
                 this.getOnGameEventListener().onGameMessage("py");
                 incrementPlayerScore(1, 1);
-                character_movement_log[movement_log_index] = "py";
-                //Log.v("Game","Log:"+character_movement_log[movement_log_index]);
-                movement_log_index++;
-                // Resetting the log when the final index is reached
-                if (movement_log_index == 7)
-                {
-                    this.getOnGameEventListener().onGameMessage("true");
-
-                    // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
-                    // the user has moved along more
-                    // Then a power-up is generated accordingly
-                    moves_count_array = count_moves(character_movement_log);
-                    power_up_location = power_up_location_generator(moves_count_array);
-
-                    // Resetting the index and the array after every 7 moves
-                    // We need to keep overwriting the character_movement_log for every 7 moves
-                    movement_log_index = 0;
-                    character_movement_log = new String[7];
-                }
             }
             else if (colour == LED_COLOR_WHITE) // Down (Negative Y axis)
             {
                 this.getOnGameEventListener().onGameMessage("ny");
                 incrementPlayerScore(0, 1);
-                character_movement_log[movement_log_index] = "ny";
-                //Log.v("Game","Log:"+character_movement_log[movement_log_index]);
-                movement_log_index++;
-                // Resetting the log when the final index is reached
-                if (movement_log_index == 7)
-                {
-                    this.getOnGameEventListener().onGameMessage("true");
-
-                    // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
-                    // the user has moved along more
-                    // Then a power-up is generated accordingly
-                    moves_count_array = count_moves(character_movement_log);
-                    power_up_location = power_up_location_generator(moves_count_array);
-
-                    // Resetting the index and the array after every 7 moves
-                    // We need to keep overwriting the character_movement_log for every 7 moves
-                    movement_log_index = 0;
-                    character_movement_log = new String[7];
-                }
             }
         }
     }

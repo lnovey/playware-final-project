@@ -131,6 +131,24 @@ public class MainActivity extends AppCompatActivity  implements OnAntEventListen
         startActivity(start_game_intent);
     }
 
+    /*
+    // These methods are for starting the game and character select
+    public void play_bulky_button(View view){
+        Intent start_game_intent = new Intent(MainActivity.this, GameActivity.class);
+        startActivity(start_game_intent);
+    }
+
+    public void play_dude_button(View view){
+        Intent start_game_intent = new Intent(MainActivity.this, GameActivity.class);
+        startActivity(start_game_intent);
+    }
+
+    public void play_guy_button(View view){
+        Intent start_game_intent = new Intent(MainActivity.this, GameActivity.class);
+        startActivity(start_game_intent);
+    }
+    */
+
     // This function is called when the About Game button is pressed
     public void about_game_button(View view)
     {

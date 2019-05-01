@@ -98,7 +98,8 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                 //failed 1, 1
                 //works with 5,2
                 while (isGameRunning){
-                    setupTiles();
+                    //uncomment this maybe to try to not have it in while loop
+                    //setupTiles();
 
 
                     switch (currState) {
@@ -110,7 +111,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                             break;
                         case 1: // found a fight
                             //isGameRunning = false;
-                            Thread.sleep(10000);
+                            Thread.sleep(8000);
                             System.out.println("please wait, fight is processing");
                             break;
                         case 2: // battle is over, lets update and get back to main loop
@@ -202,12 +203,13 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
         //bulky boy or destructive dude or genuine guy or sketchy specimen?
         //Todo
-        //create user char for real
         //finalize attack options
         //make multiple ai characters
         //come up with some creative names and sayings
         //user level up after battle
-
+        //while fight is processing have something on the screen telling the user to wait
+        //add tile input to the battle
+        //update enemy generation
 
 
         //here is the main setup method!
@@ -268,24 +270,38 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             @Override
             public void onGameScoreEvent(int step, int player_index)
             {
-                switch (axis)
-                {
-                    case "px": // Movement along positive X axis
-                        px();
-                        break;
+                switch (currState){
+                    case 0://character is moving around
 
-                    case "nx": // Movement along negative X axis
-                        nx(); //moved this method to it's own thing for modularity
-                        break;
+                        switch (axis)
+                        {
+                            case "px": // Movement along positive X axis
+                                px();
+                                break;
 
-                    case "py": // Movement along positive Y axis
-                        py();
-                        break;
+                            case "nx": // Movement along negative X axis
+                                nx(); //moved this method to it's own thing for modularity
+                                break;
 
-                    case "ny": // Movement along negative Y axis
-                        ny();
-                        break;
+                            case "py": // Movement along positive Y axis
+                                py();
+                                break;
+
+                            case "ny": // Movement along negative Y axis
+                                ny();
+                                break;
+                        }
+
+                    break;
+                    case 1:
+                    break;
+                    case 2:
+                    break;
+                    default:
+                    break;
+
                 }
+
             }
 
             @Override
