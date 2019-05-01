@@ -15,6 +15,7 @@ import com.livelife.motolibrary.Game;
 import com.livelife.motolibrary.MotoConnection;
 
 import static com.livelife.motolibrary.AntData.LED_COLOR_OFF;
+import static java.lang.Integer.parseInt;
 
 public class GameActivity extends AppCompatActivity implements OnAntEventListener
 {
@@ -34,16 +35,22 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     // Boosts for character vitals
     int xp_boost = 0;
     int health_boost = 0;
+    int attack_boost = 0;
+    int defence_boost = 0;
+
+    int health_cap = 30; // Maximum limit for health
 
     String axis = "\0"; // Stores which axis we are moving on
 
-    int current_level = 1; // Stores the level number that is character is currently on
+    //int current_level = 1; // Stores the level number that is character is currently on
 
     boolean game_end = false; // Boolean that is checked when setting up the tiles as a game controller
 
     String seven_moves = "\0"; // We use this string to check when seven moves are over
 
     String power_up_name = "\0"; // Stores the name of the power up
+
+    String[] power_up_details = new String[5];
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -65,19 +72,20 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         final TextView update_position_y = findViewById(R.id.y_position);
 
         // Textview variables for the character's vital signs
-        TextView display_xp = findViewById(R.id.xp_value);
-        TextView display_health = findViewById(R.id.health_value);
-        TextView display_attack = findViewById(R.id.attack_value);
-        TextView display_defence= findViewById(R.id.defence_value);
+        final TextView display_xp = findViewById(R.id.xp_value);
+        final TextView display_health = findViewById(R.id.health_value);
+        final TextView display_attack = findViewById(R.id.attack_value);
+        final TextView display_defence= findViewById(R.id.defence_value);
 
         // Textview variables for the character's vital signs
         final TextView power_up_x = findViewById(R.id.power_up_x);
         final TextView power_up_y = findViewById(R.id.power_up_y);
 
-        // Textview variable for the game level
+        // Textview variables for the game level
         final TextView game_level = findViewById(R.id.level_number);
         final TextView game_over_message = findViewById(R.id.level);
 
+        // Textview variables for displaying the power-ups
         final TextView power_up_message = findViewById(R.id.power_up_received);
         final TextView new_power_up = findViewById(R.id.power_up_name);
 
@@ -85,7 +93,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         update_position_x.setText(toString().valueOf(character_location.x));
         update_position_y.setText(toString().valueOf(character_location.y));
 
-        vital_signs_array = tzp_object.set_up_vital_signs(vital_signs_array);
+        vital_signs_array = tzp_object.set_up_vital_signs(vital_signs_array); // Updating the initial vital signs on the screen
 
         // Showing the initial vital signs on the screen
         display_xp.setText(toString().valueOf(vital_signs_array[0]));
@@ -94,7 +102,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         display_defence.setText(toString().valueOf(vital_signs_array[3]));
 
         // Displaying the initial level on the screen
-        game_level.setText(toString().valueOf(current_level));
+        game_level.setText(toString().valueOf(tzp_object.current_level));
 
         // Used to exchange data between the tiles and GameActivity
         tzp_object.setOnGameEventListener(new Game.OnGameEventListener()
@@ -213,7 +221,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                 {
                     while (true)
                     {
-                        Thread.sleep(2500); // Giving a delay of 2.5 seconds before switching to the next level
+                        Thread.sleep(300); // Giving a delay of 2.5 seconds before switching to the next level
                         connection.setAllTilesIdle(AntData.LED_COLOR_OFF); // setTileColor() requires the tiles to be set off before being used
                         if (game_end == false)
                         {
@@ -233,21 +241,39 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                                     power_up_x.setText(toString().valueOf(tzp_object.power_up_location.x));
                                     power_up_y.setText(toString().valueOf(tzp_object.power_up_location.y));
 
-                                    power_up_name = tzp_object.power_up_generator(); // Generating a power-up randomly
+                                    power_up_details = tzp_object.power_up_generator(); // Generating a power-up randomly
                                 }
-
-                                Log.v("Game","x character:" + character_location.x);
-                                Log.v("Game","y character:" + character_location.y);
-
-                                Log.v("Game","x power up:" + tzp_object.power_up_location.x);
-                                Log.v("Game","y power up:" + tzp_object.power_up_location.y);
 
                                 if (character_location.x == tzp_object.power_up_location.x && character_location.y == tzp_object.power_up_location.y)
                                 {
                                     System.out.println("You are at the power-up location");
                                     power_up_message.setText("You received:");
 
+                                    // Getting all the details about our weapon
+                                    power_up_name = power_up_details[0];
+                                    xp_boost = parseInt(power_up_details[1]);
+                                    health_boost = parseInt(power_up_details[2]);
+                                    attack_boost = parseInt(power_up_details[3]);
+                                    defence_boost = parseInt(power_up_details[4]);
+
+                                    // Updating each element of the vital signs array (XP, Health, Attack, Defence)
+                                    vital_signs_array[0] = vital_signs_array[0] + xp_boost;
+                                    vital_signs_array[1] = vital_signs_array[1] + health_boost;
+                                    if (vital_signs_array[1] > health_cap) // Making sure that the health of the character does not exceed the limit
+                                    {
+                                        vital_signs_array[1] = 30;
+                                    }
+                                    vital_signs_array[2] = vital_signs_array[2] + attack_boost;
+                                    vital_signs_array[3] = vital_signs_array[3] + defence_boost;
+
+                                    // Updating the vital signs on the screen
                                     new_power_up.setText(power_up_name);
+                                    display_xp.setText(toString().valueOf(vital_signs_array[0]));
+                                    display_health.setText(toString().valueOf(vital_signs_array[1]));
+                                    display_attack.setText(toString().valueOf(vital_signs_array[2]));
+                                    display_defence.setText(toString().valueOf(vital_signs_array[3]));
+
+                                    tzp_object.reset_power_up();
                                 }
 
                                 // Condition for switching to the next level
@@ -259,15 +285,34 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                                     character_location.y = 0;
 
                                     // Incrementing the level variable to move to the next one
-                                    current_level++;
+                                    tzp_object.current_level++;
 
                                     // Since we have a maximum of 3 levels, the game execution stops at the end of the third
-                                    if (current_level <= 3) // Executes for anything less than or equal to 3 levels
+                                    if (tzp_object.current_level <= 3) // Executes for anything less than or equal to 3 levels
                                     {
-                                        game_level.setText(toString().valueOf(current_level)); // Updating the level on the screen
+                                        game_level.setText(toString().valueOf(tzp_object.current_level)); // Updating the level on the screen
+
                                         // Updating the locations after resetting them for the new level on the screen
                                         update_position_x.setText(toString().valueOf(character_location.x));
                                         update_position_y.setText(toString().valueOf(character_location.y));
+
+                                        // Resetting the power up name and the vital sign boosts
+                                        power_up_name = "";
+                                        xp_boost = 0;
+                                        health_boost = 0;
+                                        attack_boost = 0;
+                                        defence_boost = 0;
+
+                                        // Resetting the power-up name on the screen
+                                        power_up_x.setText("-");
+                                        power_up_y.setText("-");
+                                        power_up_message.setText("");
+                                        new_power_up.setText("");
+
+                                        // Resetting the movement log its index at the beginning of every level
+                                        tzp_object.movement_log_index = 0;
+                                        tzp_object.character_movement_log = new String[7];
+                                        Log.v("Game","Movement index:"+tzp_object.movement_log_index);
                                     }
                                     else // Game is over after the end of the third level is reached
                                     {
