@@ -241,7 +241,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         // check coordinate layout (is it x,y on both the you are and the power up gen?) >>>>
         //while fight is processing have something on the screen telling the user to wait >>>>
         //update enemy generation >>
-        //come up with some creative names and sayings
+        //come up with some creative names and sayings>> add these to screen
         //get leveling up working and test it!
         //bulky boy or destructive dude or genuine guy or sketchy specimen?
         //add tile input to the battle
@@ -518,6 +518,11 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             }
             vital_signs_array[2] = vital_signs_array[2] + attack_boost;
             vital_signs_array[3] = vital_signs_array[3] + defence_boost;
+
+            player.health += health_boost;
+            player.experience += xp_boost;
+            player.attack += attack_boost;
+            player.defense += defence_boost;
 
             // Updating the vital signs on the screen
 

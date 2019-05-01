@@ -66,6 +66,9 @@ public class BattleActivity extends AppCompatActivity {
         //testBattle.layout = this.layout;
         //user.layout = this.layout;
 
+        System.out.println("health:" + player.health + "attack:" + player.attack +
+                "defense:" + player.defense + "xp:" + player.experience);
+
 
         System.out.println("inside the battle activity: " + player.health);
         startFight.setOnClickListener(new View.OnClickListener() {
