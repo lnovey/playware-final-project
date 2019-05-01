@@ -16,6 +16,8 @@ import com.livelife.motolibrary.OnAntEventListener;
 import com.livelife.motolibrary.Game;
 import com.livelife.motolibrary.MotoConnection;
 
+import java.util.Random;
+
 import static java.lang.Integer.parseInt;
 import static com.livelife.motolibrary.AntData.LED_COLOR_OFF;
 
@@ -847,8 +849,11 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     //method to generate fight some distance from user
     private void generateFightLocataion(){
 
-        int xdist = (int) (Math.random() * 7) + 3;
-        int ydist = (int) (Math.random() * 7) + 3;
+        Random rand = new Random();
+        int xdist = rand.nextInt(7) + 3;
+                //(int) (Math.random() * 7) + 3;
+        int ydist = rand.nextInt(7) + 3;
+                //(int) (Math.random() * 7) + 3;
 
         if (Math.random() < .5){
             if (character_location.x - xdist < 0){
