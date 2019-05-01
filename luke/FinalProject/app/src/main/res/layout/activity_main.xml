@@ -8,32 +8,32 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/game_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="The Zorkian Plane"
-        android:textSize="50sp"
-        android:fontFamily="casual"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="true"
         android:layout_centerInParent="true"
         android:layout_marginBottom="30dp"
-        android:id="@+id/game_title"/>
+        android:fontFamily="casual"
+        android:text="The Zorkian Plane"
+        android:textSize="50sp" />
 
     <Button
+        android:id="@+id/pairing_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Start Pairing"
-        android:textSize="30sp"
-        android:fontFamily="casual"
-        android:background="#FDEEF4"
-        android:textAllCaps="false"
+        android:layout_below="@id/game_title"
+        android:layout_alignParentLeft="false"
         android:layout_alignParentTop="false"
         android:layout_alignParentBottom="false"
-        android:layout_alignParentLeft="false"
         android:layout_centerInParent="true"
         android:layout_marginBottom="30dp"
-        android:layout_below="@id/game_title"
-        android:id="@+id/pairing_button" />
+        android:background="#FDEEF4"
+        android:fontFamily="casual"
+        android:text="Start Pairing"
+        android:textAllCaps="false"
+        android:textSize="30sp" />
 
     <!--
     <Button
@@ -89,85 +89,85 @@
     -->
 
     <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Play Game"
-        android:textSize="30sp"
-        android:fontFamily="casual"
-        android:background="#FDEEF4"
-        android:textAllCaps="false"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentBottom="false"
-        android:layout_alignParentLeft="false"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="30dp"
-        android:layout_below="@id/pairing_button"
         android:id="@+id/play_button"
-        android:onClick="play_game_button"/>
-
-    <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Select Difficulty"
-        android:textSize="30sp"
-        android:fontFamily="casual"
-        android:background="#FDEEF4"
-        android:textAllCaps="false"
+        android:layout_below="@id/pairing_button"
+        android:layout_alignParentLeft="false"
         android:layout_alignParentTop="false"
         android:layout_alignParentBottom="false"
-        android:layout_alignParentLeft="false"
         android:layout_centerInParent="true"
         android:layout_marginBottom="30dp"
+        android:background="#FDEEF4"
+        android:fontFamily="casual"
+        android:onClick="play_game_button"
+        android:text="Play Game"
+        android:textAllCaps="false"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/difficulty"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/play_button"
-        android:id="@+id/difficulty"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Select Character"
-        android:textSize="30sp"
-        android:fontFamily="casual"
-        android:background="#FDEEF4"
-        android:textAllCaps="false"
+        android:layout_alignParentLeft="false"
         android:layout_alignParentTop="false"
         android:layout_alignParentBottom="false"
-        android:layout_alignParentLeft="false"
         android:layout_centerInParent="true"
         android:layout_marginBottom="30dp"
+        android:background="#FDEEF4"
+        android:fontFamily="casual"
+        android:text="Select Difficulty"
+        android:textAllCaps="false"
+        android:textSize="30sp" />
+
+    <Button
+        android:id="@+id/select_character"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_below="@id/difficulty"
-        android:id="@+id/select_character"/>
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Instructions"
-        android:textSize="30sp"
-        android:fontFamily="casual"
-        android:background="#FDEEF4"
-        android:textAllCaps="false"
+        android:layout_alignParentLeft="false"
         android:layout_alignParentTop="false"
         android:layout_alignParentBottom="false"
-        android:layout_alignParentLeft="false"
         android:layout_centerInParent="true"
         android:layout_marginBottom="30dp"
-        android:layout_below="@id/select_character"
-        android:id="@+id/instructions_button"
-        android:onClick="see_instructions_button"/>
+        android:background="#FDEEF4"
+        android:fontFamily="casual"
+        android:text="Select Character"
+        android:textAllCaps="false"
+        android:textSize="30sp" />
 
     <Button
+        android:id="@+id/instructions_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="About Game"
-        android:textSize="30sp"
-        android:fontFamily="casual"
-        android:background="#FDEEF4"
-        android:textAllCaps="false"
+        android:layout_below="@id/select_character"
+        android:layout_alignParentLeft="false"
         android:layout_alignParentTop="false"
         android:layout_alignParentBottom="false"
-        android:layout_alignParentLeft="false"
         android:layout_centerInParent="true"
-        android:layout_below="@id/instructions_button"
+        android:layout_marginBottom="30dp"
+        android:background="#FDEEF4"
+        android:fontFamily="casual"
+        android:onClick="see_instructions_button"
+        android:text="Instructions"
+        android:textAllCaps="false"
+        android:textSize="30sp" />
+
+    <Button
         android:id="@+id/about_button"
-        android:onClick="about_game_button"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/instructions_button"
+        android:layout_alignParentLeft="false"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentBottom="false"
+        android:layout_centerInParent="true"
+        android:background="#FDEEF4"
+        android:fontFamily="casual"
+        android:onClick="about_game_button"
+        android:text="About Game"
+        android:textAllCaps="false"
+        android:textSize="30sp" />
 
 </RelativeLayout>

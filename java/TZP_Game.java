@@ -22,14 +22,16 @@ public class TZP_Game extends Game
 {
     MotoConnection connection = MotoConnection.getInstance();
 
+    int current_level = 1; // Stores the level number that is character is currently on
+
     // Stores the location of our character
     int character_location_x = 0;
     int character_location_y = 0;
     Point character_location = new Point(character_location_x, character_location_y);
 
     // Holds the location where the power-ups will be generated
-    int power_up_location_x = 0;
-    int power_up_location_y = 0;
+    int power_up_location_x = 1729;
+    int power_up_location_y = 1729;
     Point power_up_location = new Point(power_up_location_x, power_up_location_y);
 
     // Bounds of the world in our game
@@ -46,12 +48,14 @@ public class TZP_Game extends Game
     // Index 3 -> Units moved along the negative direction of that axis
     int[] moves_count_array = new int[4];
 
+    int next_press = 0;
+
     // Setting up the Game Type using the constructor
     public TZP_Game()
     {
         setName("TZP Game");
         setMaxPlayers(1);
-        GameType gt = new GameType(0, GameType.GAME_TYPE_TIME,300,"1 Player 1 min",1);
+        GameType gt = new GameType(0, GameType.GAME_TYPE_TIME,1200,"1 Player 1 min",1);
         addGameType(gt);
     }
 
@@ -140,55 +144,194 @@ public class TZP_Game extends Game
     }
 
     // This function provides the magical objects one at a time randomly
-    public String power_up_generator()
+    public String[] power_up_generator()
     {
-        int magical_objects = 11; // Stores the number of magical objects
+
+        // We store the details about our weapons in an array of objects
+        // Index 0 -> Weapon name
+        // Index 1 -> XP points
+        // Index 2 -> Health
+        // Index 3 -> Attack
+        // Index 4 -> Defence
+        String[] weapon_details = new String[5];
+
+        int power_ups_level_one = 7; // Stores the number of power-ups offered in Level 1
+        int power_ups_level_two = 6; // Stores the number of power-ups offered in Level 2
+        int power_ups_level_three = 5; // Stores the number of power-ups offered in Level 3
+
 
         Random random_object = new Random(); // Object of the Random() class
-        int random_number = random_object.nextInt(magical_objects) + 1; // Generating a random number that corresponds to one of the objects
 
-        String random_magical_object = "\0"; // Stores the name of the magical object
+        switch (current_level) {
+            case 1: // Level 1 power-ups
 
-        switch(random_number)
-        {
-            case 1:
-                random_magical_object = "Sorting hat";
-                break;
-            case 2:
-                random_magical_object = "Deadpool's sword";
-                break;
-            case 3:
-                random_magical_object = "Webs";
-                break;
-            case 4:
-                random_magical_object = "Arc reactor";
-                break;
-            case 5:
-                random_magical_object = "Captain America's shield";
-                break;
-            case 6:
-                random_magical_object = "Mjölnir";
-                break;
-            case 7:
-                random_magical_object = "Symbiote";
-                break;
-            case 8:
-                random_magical_object = "Adamantium Claws";
-                break;
-            case 9:
-                random_magical_object = "Hulkbuster";
-                break;
-            case 10:
-                random_magical_object = "Stormbreaker";
-                break;
-            case 11:
-                random_magical_object = "The sword of Gryffindor";
-                break;
-            case 12:
-                random_magical_object = "Fawke's the pheonix";
-                break;
+                int random_number_level_one = random_object.nextInt(power_ups_level_one) + 1; // Generating a random number that corresponds to one of the objects
+                switch (random_number_level_one) {
+                    case 1:
+                        weapon_details[0] = "The Sorting Hat"; // Power-up name
+                        weapon_details[1] = "1"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "0"; // Attack
+                        weapon_details[4] = "0"; // Defence
+                        break;
+
+                    case 2:
+                        weapon_details[0] = "Deadpool's Sword"; // Power-up name
+                        weapon_details[1] = "1"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "3"; // Attack
+                        weapon_details[4] = "1"; // Defence
+                        break;
+
+                    case 3:
+                        weapon_details[0] = "Web Cartridges and Shooters"; // Power-up name
+                        weapon_details[1] = "2"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "4"; // Attack
+                        weapon_details[4] = "2"; // Defence
+                        break;
+
+                    case 4:
+                        weapon_details[0] = "Iron Man's Arc Reactor"; // Power-up name
+                        weapon_details[1] = "5"; // XP
+                        weapon_details[2] = "3"; // Health
+                        weapon_details[3] = "7"; // Attack
+                        weapon_details[4] = "1"; // Defence
+                        break;
+
+                    case 5:
+                        weapon_details[0] = "Captain America's Shield"; // Power-up name
+                        weapon_details[1] = "5"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "5"; // Attack
+                        weapon_details[4] = "4"; // Defence
+                        break;
+
+                    case 6:
+                        weapon_details[0] = "Adamantium Claws"; // Power-up name
+                        weapon_details[1] = "5"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "5"; // Attack
+                        weapon_details[4] = "3"; // Defence
+                        break;
+
+                    case 7:
+                        weapon_details[0] = "Hawkeye's Bow and Arrow"; // Power-up name
+                        weapon_details[1] = "5"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "5"; // Attack
+                        weapon_details[4] = "3"; // Defence
+                        break;
+                }
+            break;
+
+            case 2: // Level 2 power-ups
+
+                int random_number_level_two = random_object.nextInt(power_ups_level_two) + 1; // Generating a random number that corresponds to one of the objects
+
+                switch (random_number_level_two)
+                {
+                    case 1:
+                        weapon_details[0] = "The Symbiote Suit"; // Power-up name
+                        weapon_details[1] = "5"; // XP
+                        weapon_details[2] = "2"; // Health
+                        weapon_details[3] = "10"; // Attack
+                        weapon_details[4] = "5"; // Defence
+                        break;
+
+                    case 2:
+                        weapon_details[0] = "The Pym Particle"; // Power-up name
+                        weapon_details[1] = "5"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "10"; // Attack
+                        weapon_details[4] = "5"; // Defence
+                        break;
+
+                    case 3:
+                        weapon_details[0] = "The War Machine Suit"; // Power-up name
+                        weapon_details[1] = "7"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "8"; // Attack
+                        weapon_details[4] = "5"; // Defence
+                        break;
+
+                    case 4:
+                        weapon_details[0] = "The Hulkbuster Suit"; // Power-up name
+                        weapon_details[1] = "10"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "15"; // Attack
+                        weapon_details[4] = "10"; // Defence
+                        break;
+
+                    case 5:
+                        weapon_details[0] = "Thor's Mjölnir"; // Power-up name
+                        weapon_details[1] = "10"; // XP
+                        weapon_details[2] = "3"; // Health
+                        weapon_details[3] = "10"; // Attack
+                        weapon_details[4] = "5"; // Defence
+                        break;
+
+                    case 6:
+                        weapon_details[0] = "Mar-Vell's Nega-Bands"; // Power-up name
+                        weapon_details[1] = "12"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "10"; // Attack
+                        weapon_details[4] = "5"; // Defence
+                        break;
+                }
+            break;
+
+            case 3: // Level 3 power-ups
+
+                int random_number_level_three = random_object.nextInt(power_ups_level_three) + 1; // Generating a random number that corresponds to one of the objects
+                switch (random_number_level_three)
+                {
+                    case 1:
+                        weapon_details[0] = "The Sword of Gryffindor"; // Power-up name
+                        weapon_details[1] = "10"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "7"; // Attack
+                        weapon_details[4] = "3"; // Defence
+                        break;
+
+                    case 2:
+                        weapon_details[0] = "The Bleeding Edge Suit"; // Power-up name
+                        weapon_details[1] = "10"; // XP
+                        weapon_details[2] = "5"; // Health
+                        weapon_details[3] = "12"; // Attack
+                        weapon_details[4] = "10"; // Defence
+                        break;
+
+                    case 3:
+                        weapon_details[0] = "The Eye of Agamotto"; // Power-up name
+                        weapon_details[1] = "12"; // XP
+                        weapon_details[2] = "0"; // Health
+                        weapon_details[3] = "15"; // Attack
+                        weapon_details[4] = "10"; // Defence
+                        break;
+
+                    case 4:
+                        weapon_details[0] = "The Stormbreaker"; // Power-up name
+                        weapon_details[1] = "15"; // XP
+                        weapon_details[2] = "5"; // Health
+                        weapon_details[3] = "12"; // Attack
+                        weapon_details[4] = "5"; // Defence
+                        break;
+
+                    case 5:
+                        weapon_details[0] = "Fawke's the Pheonix"; // Power-up name
+                        weapon_details[1] = "15"; // XP
+                        weapon_details[2] = "30"; // Health
+                        weapon_details[3] = "5"; // Attack
+                        weapon_details[4] = "3"; // Defence
+                        break;
+                }
+            break;
+
+
         }
-        return random_magical_object;
+
+        return weapon_details;
     }
 
     // This function counts the number of moves made by the character along each axis
@@ -434,5 +577,11 @@ public class TZP_Game extends Game
         System.out.println(power_up_location.y);
 
         return power_up_location;
+    }
+
+    public void reset_power_up()
+    {
+        power_up_location.x = 1729;
+        power_up_location.y = 1729;
     }
 }

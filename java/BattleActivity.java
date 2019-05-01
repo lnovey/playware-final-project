@@ -123,17 +123,47 @@ public class BattleActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
                                     final int position, long id) {
+                int tempAttack = 0;
                 switch (position) {
-                    case 0: // attack
-                        enemy.health = enemy.health - (BattleActivity.this.player.attack +
-                                BattleActivity.this.player.weaponAttack - enemy.defense);
+                    case 0: // human user player attack
+
+                        //1/5 of the time print something funny and gain extra 20% attack
+                        if (Math.random() < .2){
+                            System.out.println("You really poked him hard");
+                            tempAttack = 2;
+                        }
+
+                        if (enemy.defense < BattleActivity.this.player.attack + tempAttack +
+                                BattleActivity.this.player.weaponAttack) {
+                            // if an attack has enough power to deal damage
+
+                            enemy.health = enemy.health - (BattleActivity.this.player.attack +
+                                    BattleActivity.this.player.weaponAttack + tempAttack - enemy.defense);
+                        } else {
+                            //todo
+                            // print that the user isn't strong enough to harm
+                            System.out.println("you cant hurt this guy");
+                        }
+
                         break;
                     case 1: //item
                         //need to make item menu
-                        enemy.health -= player.attack + 10;
+
+                        if (Math.random() < .2){
+                            System.out.println("You're a wizard Harry!");
+                            tempAttack = 2;
+                        }
+
+                        enemy.health -= player.attack + tempAttack + 10;
                         break;
                     case 2://heal
-                        BattleActivity.this.player.health += 10;
+
+                        if (Math.random() < .2){
+                            System.out.println("Mmmmm tasty");
+                            tempAttack = BattleActivity.this.player.health/10;
+                        }
+
+                        BattleActivity.this.player.health += 10 + tempAttack;
                         break;
                     default:
                         break;
@@ -152,6 +182,7 @@ public class BattleActivity extends AppCompatActivity {
     }
 
     private void startBattleTest(AICharacter enemy) {
+        int tempAttack = 0;
 
         switch (battleState) {
             case 0:
@@ -172,8 +203,22 @@ public class BattleActivity extends AppCompatActivity {
                     action = enemy.battleTurn();
                     switch (action.type) {
                         case 1://ai attack
-                            BattleActivity.this.player.health = BattleActivity.this.player.health
-                                    - (enemy.attack + enemy.weaponAttack - BattleActivity.this.player.defense);
+
+                            if (Math.random() < .11){ //the enemy gets a boosted attack
+                                System.out.println("Ouch, someone's been eating their spinach");
+                                tempAttack = 2;
+                            }
+
+                            if (BattleActivity.this.player.defense < enemy.attack + enemy.weaponAttack + tempAttack) {
+                                //if the enemy is strong enough to deal damage
+
+                                BattleActivity.this.player.health = BattleActivity.this.player.health
+                                        - (enemy.attack + enemy.weaponAttack + tempAttack - BattleActivity.this.player.defense);
+                            } else {
+                                //todo
+                                //print that the enemy can't even harm you
+                            }
+
                             break;
                         case 2:
                             break;

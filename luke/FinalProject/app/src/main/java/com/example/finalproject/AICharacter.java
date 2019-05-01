@@ -7,6 +7,7 @@ public class AICharacter extends Character implements Parcelable {
 
     public int intelligence, numHeals, maxHealth;
 
+
     public AICharacter(int health, int level, int attack, int defense, int experience) {
         super(health, level, attack, defense, experience);
     }
@@ -39,14 +40,22 @@ public class AICharacter extends Character implements Parcelable {
     BattleAction hardTurn() {
         BattleAction returner = new BattleAction();
 
+        if (this.health <= 12 && numHeals > 0) { //chooses to heal
+            returner.type = 3;
+            returner.info[0] = 20; //how much should it heal by?
+            numHeals--;
+        } else {
+            returner.type = 1;
+        }
         return returner;
     }
 
     BattleAction mediumTurn() {
         BattleAction returner = new BattleAction();
-        if (this.health <= 5) {
+        if (this.health <= 5 && numHeals > 0) {// chooses to heal
             returner.type = 3;
-            returner.info[0] = 10;
+            returner.info[0] = 10; //how much should it heal by
+            numHeals--;
         } else {
             returner.type = 1;
         }

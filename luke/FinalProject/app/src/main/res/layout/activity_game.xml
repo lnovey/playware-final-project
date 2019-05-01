@@ -282,4 +282,17 @@
         android:layout_below="@id/power_up_received"
         android:id="@+id/power_up_name"/>
 
+    <TextView
+        android:id="@+id/processing_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="casual"
+        android:text="Loading main page,please don't do anything"
+        android:textSize="50sp" />
+
 </RelativeLayout>
