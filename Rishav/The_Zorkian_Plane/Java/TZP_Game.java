@@ -1,4 +1,4 @@
-package com.example.tzp;
+package com.example.thezorkianplane;
 
 import android.graphics.Point;
 import android.util.Log;
@@ -22,6 +22,8 @@ public class TZP_Game extends Game
 {
     MotoConnection connection = MotoConnection.getInstance();
 
+    int current_level = 1; // Stores the level number that is character is currently on
+
     // Stores the location of our character
     int character_location_x = 0;
     int character_location_y = 0;
@@ -36,7 +38,9 @@ public class TZP_Game extends Game
     int upper_bound = 20;
     int lower_bound = 0;
 
-    int current_level = 1; // Stores the level number that is character is currently on
+    int movement_log_level_one = 7;
+    int movement_log_level_two = 9;
+    int movement_log_level_three = 1;
 
     String[] character_movement_log = new String[7]; // Array to log the movement of the character
     int movement_log_index = 0; // Index for the above array
@@ -47,6 +51,8 @@ public class TZP_Game extends Game
     // Index 2 -> Units moved along the positive direction of that axis
     // Index 3 -> Units moved along the negative direction of that axis
     int[] moves_count_array = new int[4];
+
+    int next_press = 0;
 
     // Setting up the Game Type using the constructor
     public TZP_Game()
@@ -78,106 +84,29 @@ public class TZP_Game extends Game
         int event = AntData.getCommand(message);
         int colour = AntData.getColorFromPress(message);
 
+        //Log.v("Game","Tile ID:"+AntData.getId(message));
+
         if (event == EVENT_PRESS)
         {
             if (colour == LED_COLOR_GREEN) // Right (Positive X axis)
             {
                 this.getOnGameEventListener().onGameMessage("px");
                 incrementPlayerScore(1, 1);
-
-                character_movement_log[movement_log_index] = "px";
-                movement_log_index++;
-
-                if (movement_log_index == 7)
-                {
-                    this.getOnGameEventListener().onGameMessage("true");
-
-                    // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
-                    // the user has moved along more
-                    // Then a power-up is generated accordingly
-                    moves_count_array = count_moves(character_movement_log);
-                    power_up_location = power_up_location_generator(moves_count_array);
-
-                    // Resetting the index and the array after every 7 moves
-                    // We need to keep overwriting the character_movement_log for every 7 moves
-                    movement_log_index = 0;
-                    character_movement_log = new String[7];
-                }
             }
             else if (colour == LED_COLOR_BLUE) // Left (Negative X axis)
             {
                 this.getOnGameEventListener().onGameMessage("nx");
                 incrementPlayerScore(0, 1);
-
-                character_movement_log[movement_log_index] = "nx";
-                movement_log_index++;
-
-                // Resetting the log when the final index is reached
-                if (movement_log_index == 7)
-                {
-                    this.getOnGameEventListener().onGameMessage("true");
-
-                    // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
-                    // the user has moved along more
-                    // Then a power-up is generated accordingly
-                    moves_count_array = count_moves(character_movement_log);
-                    power_up_location = power_up_location_generator(moves_count_array);
-
-                    // Resetting the index and the array after every 7 moves
-                    // We need to keep overwriting the character_movement_log for every 7 moves
-                    movement_log_index = 0;
-                    character_movement_log = new String[7];
-                }
             }
             else if (colour == LED_COLOR_VIOLET) // Up (Positive Y axis)
             {
                 this.getOnGameEventListener().onGameMessage("py");
                 incrementPlayerScore(1, 1);
-
-                character_movement_log[movement_log_index] = "py";
-                movement_log_index++;
-
-                // Resetting the log when the final index is reached
-                if (movement_log_index == 7)
-                {
-                    this.getOnGameEventListener().onGameMessage("true");
-
-                    // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
-                    // the user has moved along more
-                    // Then a power-up is generated accordingly
-                    moves_count_array = count_moves(character_movement_log);
-                    power_up_location = power_up_location_generator(moves_count_array);
-
-                    // Resetting the index and the array after every 7 moves
-                    // We need to keep overwriting the character_movement_log for every 7 moves
-                    movement_log_index = 0;
-                    character_movement_log = new String[7];
-                }
             }
             else if (colour == LED_COLOR_WHITE) // Down (Negative Y axis)
             {
                 this.getOnGameEventListener().onGameMessage("ny");
                 incrementPlayerScore(0, 1);
-
-                character_movement_log[movement_log_index] = "ny";
-                movement_log_index++;
-
-                // Resetting the log when the final index is reached
-                if (movement_log_index == 7)
-                {
-                    this.getOnGameEventListener().onGameMessage("true");
-
-                    // After every 7 moves we check which axis (positive x, negative x, positive y, negative y)
-                    // the user has moved along more
-                    // Then a power-up is generated accordingly
-                    moves_count_array = count_moves(character_movement_log);
-                    power_up_location = power_up_location_generator(moves_count_array);
-
-                    // Resetting the index and the array after every 7 moves
-                    // We need to keep overwriting the character_movement_log for every 7 moves
-                    movement_log_index = 0;
-                    character_movement_log = new String[7];
-                }
             }
         }
     }
@@ -207,7 +136,7 @@ public class TZP_Game extends Game
         }
     }
 
-    // This function sets up the initial vital signs of the character -> XP, Health, Attack, Defence
+    // This function sets up the intial vital signs of the character -> XP, Health, Attack, Defence
     public int[] set_up_vital_signs(int[] vital_signs_array)
     {
         vital_signs_array[0] = 5;
@@ -221,6 +150,7 @@ public class TZP_Game extends Game
     // This function provides the magical objects one at a time randomly
     public String[] power_up_generator()
     {
+
         // We store the details about our weapons in an array of objects
         // Index 0 -> Weapon name
         // Index 1 -> XP points
@@ -233,15 +163,14 @@ public class TZP_Game extends Game
         int power_ups_level_two = 6; // Stores the number of power-ups offered in Level 2
         int power_ups_level_three = 5; // Stores the number of power-ups offered in Level 3
 
+
         Random random_object = new Random(); // Object of the Random() class
 
-        switch(current_level)
-        {
+        switch (current_level) {
             case 1: // Level 1 power-ups
 
                 int random_number_level_one = random_object.nextInt(power_ups_level_one) + 1; // Generating a random number that corresponds to one of the objects
-                switch (random_number_level_one)
-                {
+                switch (random_number_level_one) {
                     case 1:
                         weapon_details[0] = "The Sorting Hat"; // Power-up name
                         weapon_details[1] = "1"; // XP
@@ -402,7 +331,10 @@ public class TZP_Game extends Game
                         break;
                 }
                 break;
+
+
         }
+
         return weapon_details;
     }
 
@@ -471,6 +403,11 @@ public class TZP_Game extends Game
             moves_count_array[3] = moves_negative_y;
         }
 
+        for (int i = 0; i < 4; i++)
+        {
+            Log.v("Game","Moves count:"+moves_count_array[i]);
+        }
+
         return moves_count_array;
     }
 
@@ -488,15 +425,30 @@ public class TZP_Game extends Game
 
         int quarter_probability = random_object.nextInt(4) + 1; // Generating a box with a probability of 25%
 
+        System.out.print("Which box will have the power-up: ");
         System.out.println(quarter_probability);
 
         if (moves_count_array[0] == 120) // The power-up will be generated along the x axis
         {
+            System.out.println("Since the character has moved more along the x axis, the power-up will be generated on the x axis");
+
+            System.out.print("Movement along positive x axis: ");
+            System.out.println(positive_steps);
+
+            System.out.print("Movement along negative x axis: ");
+            System.out.println(negative_steps);
+
             power_up_location.y = character_location.y; // The y location of the power-up is the same as that of the character
 
             if (positive_steps > negative_steps) // The user has moved in the positive direction more
             {
+                System.out.println("Since movement is more along positive x axis, the power up will be generated on the positive x axis");
+
                 power_up_location.x = character_location.x + quarter_probability; // Generating the x location of our power-up
+                System.out.print("X location of the character: ");
+
+                System.out.println(character_location.x);
+
                 if (power_up_location.x > upper_bound) // To make sure that the power-up is generated within our world
                 {
                     power_up_location.x = upper_bound; // Placed at the edge of our world
@@ -505,6 +457,11 @@ public class TZP_Game extends Game
 
             else if (negative_steps > positive_steps) // The user has moved in the negative direction more
             {
+                System.out.println("Since movement is more along negative x axis, the power up will be generated on the negative x axis");
+
+                System.out.print("X location of the character: ");
+                System.out.println(character_location.x);
+
                 power_up_location.x = character_location.x - quarter_probability; // Generating the x location of our power-up
                 if (power_up_location.x < lower_bound) // To make sure that the power-up is generated within our world
                 {
@@ -513,18 +470,30 @@ public class TZP_Game extends Game
             }
             else if (positive_steps == negative_steps) // The user has moved in both directions by the same amount
             {
+                System.out.println("Equal steps");
+
                 int direction_probability = random_object.nextInt(2); // Choosing between the positive or negative directions with an equal probability
 
                 if (direction_probability == 0) // Positive direction
                 {
-                   power_up_location.x = character_location.x + quarter_probability; // Generating the x location of our power-up
-                     if (power_up_location.x > upper_bound) // To make sure that the power-up is generated within our world
-                         {
+                    System.out.println("Positive direction");
+
+                    System.out.print("X location of the character: ");
+                    System.out.println(character_location.x);
+
+                    power_up_location.x = character_location.x + quarter_probability; // Generating the x location of our power-up
+                    if (power_up_location.x > upper_bound) // To make sure that the power-up is generated within our world
+                    {
                         power_up_location.x = upper_bound; // Placed at the edge of our world
                     }
                 }
                 else // Negative direction
                 {
+                    System.out.println("Negative direction");
+
+                    System.out.print("X location of the character: ");
+                    System.out.println(character_location.x);
+
                     power_up_location.x = character_location.x - quarter_probability; // Generating the x location of our power-up
                     if (power_up_location.x < lower_bound) // To make sure that the power-up is generated within our world
                     {
@@ -535,10 +504,23 @@ public class TZP_Game extends Game
         }
         else // The power-up will be generated along the y axis
         {
+            System.out.println("Since the character has moved more along the y axis, the power up will be generated on the y axis");
+
+            System.out.print("Movement along positive y axis: ");
+            System.out.println(positive_steps);
+
+            System.out.print("Movement along negative y axis: ");
+            System.out.println(negative_steps);
+
             power_up_location.x = character_location.x; // The x location of the power-up is the same as that of the character
 
             if (positive_steps > negative_steps) // The user has moved in the positive direction more
             {
+                System.out.println("Since movement is more along positive y axis, the power up will be generated on the positive y axis");
+
+                System.out.print("Y location of the character: ");
+                System.out.println(character_location.y);
+
                 power_up_location.y = character_location.y + quarter_probability; // Generating the y location of our power-up
                 if (power_up_location.y > upper_bound) // To make sure that the power-up is generated within our world
                 {
@@ -547,6 +529,11 @@ public class TZP_Game extends Game
             }
             else if (negative_steps > positive_steps) // The user has moved in the negative direction more
             {
+                System.out.println("Since movement is more along negative y axis, the power up will be generated on the negative y axis");
+
+                System.out.print("Y location of the character: ");
+                System.out.println(character_location.y);
+
                 power_up_location.y = character_location.y - quarter_probability; // Generating the y location of our power-up
                 if (power_up_location.y < lower_bound) // To make sure that the power-up is generated within our world
                 {
@@ -561,6 +548,11 @@ public class TZP_Game extends Game
 
                 if (direction_probability == 0) // Positive direction
                 {
+                    System.out.println("Positive direction");
+
+                    System.out.print("Y location of the character: ");
+                    System.out.println(character_location.y);
+
                     power_up_location.y = character_location.y + quarter_probability; // Generating the y location of our power-up
                     if (power_up_location.y > upper_bound) // To make sure that the power-up is generated within our world
                     {
@@ -569,6 +561,11 @@ public class TZP_Game extends Game
                 }
                 else // Negative direction
                 {
+                    System.out.println("Negative direction");
+
+                    System.out.print("Y location of the character: ");
+                    System.out.println(character_location.y);
+
                     power_up_location.y = character_location.y - quarter_probability; // Generating the y location of our power-up
                     if (power_up_location.y < lower_bound) // To make sure that the power-up is generated within our world
                     {
@@ -578,12 +575,17 @@ public class TZP_Game extends Game
             }
         }
 
+        System.out.print("X location of power up:");
+        System.out.println(power_up_location.x);
+        System.out.print("Y location of power up:");
+        System.out.println(power_up_location.y);
+
         return power_up_location;
     }
 
     public void reset_power_up()
     {
-         power_up_location.x = 1729;
-         power_up_location.y = 1729;
+        power_up_location.x = 1729;
+        power_up_location.y = 1729;
     }
 }
