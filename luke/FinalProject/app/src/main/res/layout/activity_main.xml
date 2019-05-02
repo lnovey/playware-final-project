@@ -104,7 +104,7 @@
         android:text="Play Game"
         android:textAllCaps="false"
         android:textSize="30sp" />
-
+<!--
     <Button
         android:id="@+id/difficulty"
         android:layout_width="wrap_content"
@@ -136,12 +136,12 @@
         android:text="Select Character"
         android:textAllCaps="false"
         android:textSize="30sp" />
-
+-->
     <Button
         android:id="@+id/instructions_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/select_character"
+        android:layout_below="@id/play_button"
         android:layout_alignParentLeft="false"
         android:layout_alignParentTop="false"
         android:layout_alignParentBottom="false"

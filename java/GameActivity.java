@@ -284,10 +284,14 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
 
         // Button variables for moving the character when no tiles are available
+       /*
         upButton = findViewById(R.id.upButton);
         downButton = findViewById(R.id.downButton);
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
+        */
+
+
 
         //main setup function, need to do this before assigning vitals
         setupEverything();
@@ -330,7 +334,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         setupEverything();
         //characterSetup();
 
-
+/*
         //unused buttons
         leftButton.setOnClickListener(new View.OnClickListener()
         {
@@ -371,6 +375,8 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             }
 
         } );
+
+        */
 
         // Displaying the initial level on the screen
         tzp_object.setOnGameEventListener(new Game.OnGameEventListener()
