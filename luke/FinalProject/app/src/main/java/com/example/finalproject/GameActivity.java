@@ -178,6 +178,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                             break;
                         case 3:
                             isGameRunning = false;
+                            finish();
                             break;
                         case 17:
                             Thread.sleep(4000);
@@ -242,10 +243,16 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         leftButton = findViewById(R.id.leftButton);
         rightButton = findViewById(R.id.rightButton);
 
+        //main setup function, need to do this before assigning vitals
+        setupEverything();
 
-        vital_signs_array = tzp_object.set_up_vital_signs(vital_signs_array);
+        //vital_signs_array = tzp_object.set_up_vital_signs(vital_signs_array);
 
-        vital_signs_array = tzp_object.set_up_vital_signs(vital_signs_array);
+        //vital_signs_array = tzp_object.set_up_vital_signs(vital_signs_array);
+        vital_signs_array[0] = player.experience;
+        vital_signs_array[1] = player.health;
+        vital_signs_array[2] = player.attack;
+        vital_signs_array[3] = player.defense;
 
         // Showing the initial vital signs on the screen
         display_xp.setText(toString().valueOf(vital_signs_array[0]));
@@ -289,7 +296,8 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         //update battle activity xml
         //update attack values on screen (same as human characters)
         //modify powerup gen for final level(rishav)
-        //
+        //implement user death and \/
+        //^implement more clear description of in between levels ^
 
         //get leveling up working and test it!
         //bulky boy or destructive dude or genuine guy or sketchy specimen?
@@ -842,7 +850,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                 // and xp and stuff maybe call a method
             } else {
                 //user lost
-
+                isBossDead = false;
                 System.out.println("user lost in returned method");
             }
 
@@ -861,17 +869,39 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
     private void battleOver(){ //do some xp gaining, update some we won battle stuff,
         // and get loop going again
-        numFought++;
-        isBossGen = false;
-        currState = 2;
-        enemyLocation.set(1729,1729);
-        //System.out.println("back from battle");
-        System.out.println("battle over and hopefully restarting thread ");
+
+        if (!isBossDead){ //user died we need to clean up
+            currState = 3;
+            runOnUiThread(new Runnable() {
+
+                @Override
+                public void run() {
+                    game_over_message.setText("Game Over"); // Endgame message
+                    game_level.setText("");
+                }
+            });
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } else {
+            numFought++;
+            isBossGen = false;
+            currState = 2;
+            enemyLocation.set(1729,1729);
+            //System.out.println("back from battle");
+            System.out.println("battle over and hopefully restarting thread ");
+        }
+
 
     }
 
     private void enterBattle(){
         currState = 1; //currstate1 = battle, this might not be necessary
+        player.health=1;
+        player.defense=1;
+        player.attack=1;
         Intent start_game_intent = new Intent(GameActivity.this, BattleActivity.class);
         start_game_intent.putExtra("enemyFighter", enemies[numFought]);
         start_game_intent.putExtra("playerFighter", player);
@@ -1156,7 +1186,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
     private void characterSetup(){
         //this should change based on users choice of char
-        player = new HumanCharacter(1000,1,6,3,0);
+        player = new HumanCharacter(1,1,6,1,0);
         player.weaponAttack = 1;
 
         //this should change based on difficulty selected
