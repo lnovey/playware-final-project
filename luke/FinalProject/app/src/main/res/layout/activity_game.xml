@@ -358,7 +358,7 @@
         android:layout_marginRight="335dp"
         android:layout_below="@id/go_to_the_boss"
         android:id="@+id/boss_location_y"/>
-
+<!--
     <TextView
         android:id="@+id/processing_text"
         android:layout_width="wrap_content"
@@ -371,5 +371,5 @@
         android:fontFamily="casual"
         android:text="Loading main page,please don't do anything"
         android:textSize="50sp" />
-
+-->
 </RelativeLayout>

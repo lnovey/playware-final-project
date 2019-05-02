@@ -38,6 +38,10 @@ public class TZP_Game extends Game
     int upper_bound = 20;
     int lower_bound = 0;
 
+    int movement_log_level_one = 7;
+    int movement_log_level_two = 9;
+    int movement_log_level_three = 1;
+
     String[] character_movement_log = new String[7]; // Array to log the movement of the character
     int movement_log_index = 0; // Index for the above array
 
@@ -223,7 +227,7 @@ public class TZP_Game extends Game
                         weapon_details[4] = "3"; // Defence
                         break;
                 }
-            break;
+                break;
 
             case 2: // Level 2 power-ups
 
@@ -279,7 +283,7 @@ public class TZP_Game extends Game
                         weapon_details[4] = "5"; // Defence
                         break;
                 }
-            break;
+                break;
 
             case 3: // Level 3 power-ups
 
@@ -321,12 +325,12 @@ public class TZP_Game extends Game
                     case 5:
                         weapon_details[0] = "Fawke's the Pheonix"; // Power-up name
                         weapon_details[1] = "15"; // XP
-                        weapon_details[2] = "30"; // Health
+                        weapon_details[2] = "50"; // Health
                         weapon_details[3] = "5"; // Attack
                         weapon_details[4] = "3"; // Defence
                         break;
                 }
-            break;
+                break;
 
 
         }

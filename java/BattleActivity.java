@@ -43,7 +43,9 @@ public class BattleActivity extends AppCompatActivity {
     //= new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1, temp);
 
     public Handler handler = new Handler();
-
+    Button attack_button, heal_button;
+    TextView health_value, attack_value,
+            defence_value, enemy_attack, enemy_health, trash, enemy_health_value;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,11 +54,16 @@ public class BattleActivity extends AppCompatActivity {
 
         //tells our old activity to wait until result is 7
 
+        attack_button = findViewById(R.id.attack_button);
+        heal_button = findViewById(R.id.heal_button);
+        health_value = findViewById(R.id.health_value);
+        attack_value = findViewById(R.id.attack_value);
+        defence_value = findViewById(R.id.defence_value);
+        enemy_attack = findViewById(R.id.enemy_attack);
+        enemy_health = findViewById(R.id.enemy_health);
+        trash = findViewById(R.id.trash);
+        enemy_health_value = findViewById(R.id.enemy_health_value);
 
-        startFight = findViewById(R.id.startFight);
-        layout = (LinearLayout) findViewById(R.id.layout);
-        userHealth = findViewById(R.id.userHealth);
-        enemyHealth = findViewById(R.id.enemyHealth);
 
         //ai.weaponAttack = 10;
         //user.weaponAttack = 10;
@@ -66,118 +73,80 @@ public class BattleActivity extends AppCompatActivity {
         //testBattle.layout = this.layout;
         //user.layout = this.layout;
 
+        BattleActivity.this.setupBattleTest();
+
         System.out.println("health:" + player.health + "attack:" + player.attack +
                 "defense:" + player.defense + "xp:" + player.experience);
 
 
         System.out.println("inside the battle activity: " + player.health);
-        startFight.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                BattleActivity.this.setupBattleTest();
-                //BattleActivity.this.startBattle();
-
-            }
-        });
-
-        // we just run this so that the activity keeps running until fight is over
-        /*Thread fightLoop = new Thread() {
-
-            @Override
-            public void run() {
-
-                while (isThreadOn){
-                    System.out.println("in the thread loop");
-
-                    if (player.health <= 0 || enemy.health <= 0){
-                        isThreadOn = false;
-                    }
-
-                    try {
-                        currentThread().sleep(5000);
-                    } catch (InterruptedException e) {
-
-                    }
-                }
-                System.out.println("battle over in thread");
-
-            }
-
-        };
-
-        fightLoop.start();
-        */
 
     }
 
     private void setupBattleTest() {
+        health_value.setText("User health" + BattleActivity.this.player.health);
+        enemy_health_value.setText("Enemy health" + enemy.health);
+
         battleChoices.add("attack");
         battleChoices.add("item");
         battleChoices.add("heal");
         isFight = true;
 
-        adapter = new ArrayAdapter<String>(BattleActivity.this, android.R.layout.simple_list_item_1, battleChoices);
-        listView = (ListView) findViewById(R.id.listView);
+        //adapter = new ArrayAdapter<String>(BattleActivity.this, android.R.layout.simple_list_item_1, battleChoices);
+        //listView = (ListView) findViewById(R.id.listView);
 
-        listView.setAdapter(adapter);
+        //listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
+        attack_button.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view,
-                                    final int position, long id) {
-                int tempAttack = 0;
-                switch (position) {
-                    case 0: // human user player attack
+            public void onClick(View view)
+            {                int tempAttack = 0;
 
-                        //1/5 of the time print something funny and gain extra 20% attack
-                        if (Math.random() < .2){
-                            System.out.println("You really poked him hard");
-                            tempAttack = 2;
-                        }
+                //1/5 of the time print something funny and gain extra 20% attack
+                if (Math.random() < .2){
+                    System.out.println("You really poked him hard");
+                    tempAttack = 2;
+                }
 
-                        if (enemy.defense < BattleActivity.this.player.attack + tempAttack +
-                                BattleActivity.this.player.weaponAttack) {
-                            // if an attack has enough power to deal damage
+                if (enemy.defense < BattleActivity.this.player.attack + tempAttack +
+                        BattleActivity.this.player.weaponAttack) {
+                    // if an attack has enough power to deal damage
 
-                            enemy.health = enemy.health - (BattleActivity.this.player.attack +
-                                    BattleActivity.this.player.weaponAttack + tempAttack - enemy.defense);
-                        } else {
-                            //todo
-                            // print that the user isn't strong enough to harm
-                            System.out.println("you cant hurt this guy");
-                        }
-
-                        break;
-                    case 1: //item
-                        //need to make item menu
-
-                        if (Math.random() < .2){
-                            System.out.println("You're a wizard Harry!");
-                            tempAttack = 2;
-                        }
-
-                        enemy.health -= player.attack + tempAttack + 10;
-                        break;
-                    case 2://heal
-
-                        if (Math.random() < .2){
-                            System.out.println("Mmmmm tasty");
-                            tempAttack = BattleActivity.this.player.health/10;
-                        }
-
-                        BattleActivity.this.player.health += 10 + tempAttack;
-                        break;
-                    default:
-                        break;
+                    enemy.health = enemy.health - (BattleActivity.this.player.attack +
+                            BattleActivity.this.player.weaponAttack + tempAttack - enemy.defense);
+                } else {
+                    //todo
+                    // print that the user isn't strong enough to harm
+                    System.out.println("you cant hurt this guy");
                 }
                 isUserDone = true;
                 battleState = 1;
-
-                System.out.println(battleChoices.get(position));
                 startBattleTest(enemy);
+
             }
-        });
+
+        } );
+
+        heal_button.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                int tempAttack = 0;
+                if (Math.random() < .2){
+                    System.out.println("You're a wizard Harry");
+                    tempAttack = BattleActivity.this.player.health/10;
+                }
+
+                BattleActivity.this.player.health += 10 + tempAttack;
+                isUserDone = true;
+                battleState = 1;
+                startBattleTest(enemy);
+
+            }
+
+        } );
 
         System.out.println("about to start battle");
         startBattleTest(enemy);
@@ -236,8 +205,8 @@ public class BattleActivity extends AppCompatActivity {
                 }
 
 
-                userHealth.setText("User health" + BattleActivity.this.player.health);
-                enemyHealth.setText("Enemy health" + enemy.health);
+                health_value.setText("User health" + BattleActivity.this.player.health);
+                enemy_health_value.setText("Enemy health" + enemy.health);
                 if (BattleActivity.this.player.health <= 0) {
                     System.out.println("you lose");
                     isFight = false;

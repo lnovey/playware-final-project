@@ -25,7 +25,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 {
     MotoConnection connection = MotoConnection.getInstance();
 
-    TZP_Game tzp_object = new TZP_Game(); // Creating the game object
+    com.example.finalproject.TZP_Game tzp_object = new com.example.finalproject.TZP_Game(); // Creating the game object
 
     //Point character_location = new Point(tzp_object.character_start_x, tzp_object.character_start_y); // Stores the location of our character
     Point character_location = tzp_object.character_location; // Holds the location of the character
@@ -49,6 +49,11 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     // Index 3 -> Defence
     int[] vital_signs_array = new int[4];
 
+    int initHealth = 50;
+    int initAtk = 5 ;
+    int initDef = 5;
+    int initXp = 5;
+
     // Boosts for character vitals
     int xp_boost = 0;
     int health_boost = 0;
@@ -56,20 +61,20 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     int defence_boost = 0;
     int initial_xp = 0; // Stores the initial XP points at the start of every level
 
-    int health_cap = 30; // Maximum limit for health
+    int health_cap = 200; // Maximum limit for health
 
     //integer value of enemies fought, differs from current_level
     int numFought = 0;
 
     // XP threshold points for each level
     int level_one_xp_threshold = 10;
-    int level_two_xp_threshold = 20;
-    int level_three_xp_threshold = 40;
+    int level_two_xp_threshold = 80;
+    int level_three_xp_threshold = 170;
 
     String axis = "\0"; // Stores which axis we are moving on
 
     // Textview to tell the user not to act after a battle
-    TextView processing;
+    //TextView processing;
 
     // Textview variables for showing the x and y locations of our character
     TextView update_position_x;// = findViewById(R.id.x_position);
@@ -89,10 +94,10 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     TextView full_health_text;// = findViewById(R.id.full_health_message);
 
     // Textview variables for the boss location
-     TextView boss;// = findViewById(R.id.fight_the_boss);
-     TextView boss_message;// = findViewById(R.id.go_to_the_boss);
-     TextView boss_x;// = findViewById(R.id.boss_location_x);
-     TextView boss_y;// = findViewById(R.id.boss_location_y);
+    TextView boss;// = findViewById(R.id.fight_the_boss);
+    TextView boss_message;// = findViewById(R.id.go_to_the_boss);
+    TextView boss_x;// = findViewById(R.id.boss_location_x);
+    TextView boss_y;// = findViewById(R.id.boss_location_y);
 
     //Textview variables for powerup coordinates
     TextView power_up_x;// = findViewById(R.id.power_up_x);
@@ -128,6 +133,42 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     // Index 3 -> Attack points gained
     // Index 4 -> Attack points gained
     String[] power_up_details = new String[5];
+
+    private void characterSetup(){
+        //this should change based on users choice of char
+        player = new HumanCharacter(initHealth,1,initAtk,initDef,initXp);
+        player.weaponAttack = 1;
+
+        //this should change based on difficulty selected
+        enemies = new AICharacter[3];
+        //first enemy has 40-44 health, 30 atk, 25 def, lvl 1
+        enemies[0] = new AICharacter((int) (Math.random() * 5) + 40, 1,
+                30,25,0);
+        //second enemy has 95-110 health, 63-75 atk, 93-103 def, lvl 3
+        enemies[1] = new AICharacter((int) (Math.random() * 16) + 95, 3,
+                (int) (Math.random() * 12) + 63, (int) (Math.random() * 11) + 93, 0);
+        //third enemy has 130 health, 95 atk, 138 def, lvl 5
+        enemies[2] = new AICharacter( 330, 6,
+                155, (int) 200,
+                0);
+
+        enemies[0].weaponAttack = 1;
+        enemies[1].weaponAttack = 3;
+        enemies[2].weaponAttack = 5;
+
+        enemies[0].intelligence = 0;
+        enemies[1].intelligence=1;
+        enemies[2].intelligence=2;
+
+        enemies[1].numHeals = 1;
+        enemies[2].numHeals = 3;
+
+        enemies[0].maxHealth = enemies[0].health;
+        enemies[1].maxHealth = enemies[1].health;
+        enemies[2].maxHealth = enemies[2].health;
+
+
+    }
 
 
     //this is the main game loop that houses all of the logic for our project
@@ -172,7 +213,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
                                 @Override
                                 public void run() {
-                                    processing.setVisibility(View.GONE);
+                                    //processing.setVisibility(View.GONE);
                                 }
                             });
 
@@ -236,8 +277,8 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         //assignning textviews
         update_position_x = findViewById(R.id.x_position);
         update_position_y = findViewById(R.id.y_position);
-        processing = findViewById(R.id.processing_text);
-        processing.setVisibility(View.GONE);
+        //processing = findViewById(R.id.processing_text);
+        //processing.setVisibility(View.GONE);
 
         // Textview variables for the character's vital signs
 
@@ -265,15 +306,15 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         display_attack.setText(toString().valueOf(vital_signs_array[2]));
         display_defence.setText(toString().valueOf(vital_signs_array[3]));
 
-         game_level = findViewById(R.id.level_number);
-         game_over_message = findViewById(R.id.level);
+        game_level = findViewById(R.id.level_number);
+        game_over_message = findViewById(R.id.level);
 
-         power_up_message = findViewById(R.id.power_up_received);
-         new_power_up = findViewById(R.id.power_up_name);
+        power_up_message = findViewById(R.id.power_up_received);
+        new_power_up = findViewById(R.id.power_up_name);
 
         // Textview variables for the character's vital signs
-         power_up_x = findViewById(R.id.power_up_x);
-         power_up_y = findViewById(R.id.power_up_y);
+        power_up_x = findViewById(R.id.power_up_x);
+        power_up_y = findViewById(R.id.power_up_y);
 
 
         // Displaying the initial level on the screen
@@ -296,7 +337,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             @Override
             public void onClick(View view)
             {
-             nx();
+                nx();
             }
 
         } );
@@ -366,13 +407,13 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                                 break;
                         }
 
-                    break;
+                        break;
                     case 1:
-                    break;
+                        break;
                     case 2:
-                    break;
+                        break;
                     default:
-                    break;
+                        break;
 
                 }
 
@@ -555,7 +596,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
                 @Override
                 public void run() {
-                    processing.setVisibility(View.VISIBLE);
+                    //processing.setVisibility(View.VISIBLE);
                 }
             });
             enterBattle();
@@ -589,7 +630,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                             generateFightLocataion();
                             printFightLocation();
                             System.out.println("generated boss at" + enemyLocation.x + "," +
-                                enemyLocation.y);
+                                    enemyLocation.y);
                             isBossGen = true;
                             isSkipGenFlag = true;
                         }
@@ -653,7 +694,21 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
             if (power_up_name.equals("Fawke's the Pheonix"))
             {
-                full_health_text.setText("FULL HEALTH BOOST!!!"); // Displaying the full health message
+                runOnUiThread(new Runnable() {
+
+                                  @Override
+                                  public void run() {
+                                      full_health_text.setText("FULL HEALTH BOOST!!!"); // Displaying the full health message
+                                      try {
+                                          Thread.sleep(1000);
+                                      } catch (InterruptedException e) {
+                                          e.printStackTrace();
+                                      }
+                                      full_health_text.setText("");
+                                  }
+
+                              });
+
             }
 
             power_up_comments = weapon_comments(power_up_name); // Generating a comment for the power-up received
@@ -663,7 +718,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             vital_signs_array[1] = vital_signs_array[1] + health_boost;
             if (vital_signs_array[1] > health_cap) // Making sure that the health of the character does not exceed the limit
             {
-                vital_signs_array[1] = 30;
+                vital_signs_array[1] = health_cap;
             }
             vital_signs_array[2] = vital_signs_array[2] + attack_boost;
             vital_signs_array[3] = vital_signs_array[3] + defence_boost;
@@ -820,7 +875,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
             if (data.getIntExtra("winner", 0) == 1){
                 //user won
-                player.health = data.getIntExtra("health", 10);
+                //player.health = data.getIntExtra("health", 10);
 
                 System.out.println("user won in returned method: " + player.health);
                 isBossDead = true;
@@ -872,6 +927,9 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             enemyLocation.set(1729,1729);
             //System.out.println("back from battle");
             System.out.println("battle over and hopefully restarting thread ");
+
+            //20 point health boost after each boss
+            player.health += 20;
         }
 
 
@@ -879,9 +937,9 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
     private void enterBattle(){
         currState = 1; //currstate1 = battle, this might not be necessary
-        player.health=1;
-        player.defense=1;
-        player.attack=1;
+        //player.health=1;
+        //player.defense=1;
+        //player.attack=1;
         Intent start_game_intent = new Intent(GameActivity.this, BattleActivity.class);
         start_game_intent.putExtra("enemyFighter", enemies[numFought]);
         start_game_intent.putExtra("playerFighter", player);
@@ -1122,14 +1180,14 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
         Random rand = new Random();
         int xdist = rand.nextInt(7) + 3;
-                //(int) (Math.random() * 7) + 3;
+        //(int) (Math.random() * 7) + 3;
         try {
             Thread.sleep(100);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         int ydist = rand.nextInt(7) + 3;
-                //(int) (Math.random() * 7) + 3;
+        //(int) (Math.random() * 7) + 3;
 
         if (Math.random() < .5){
             if (character_location.x - xdist < 0){
@@ -1151,53 +1209,19 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         }
         if (Math.random() < .5){
             if (character_location.y - ydist < 0){
-                enemyLocation.y = character_location.y + xdist;
+                enemyLocation.y = character_location.y + ydist;
             } else {
-                enemyLocation.y = character_location.y - xdist;
+                enemyLocation.y = character_location.y - ydist;
             }
         } else {
             if (character_location.y + ydist > 20){
-                enemyLocation.y = character_location.y - xdist;
+                enemyLocation.y = character_location.y - ydist;
             } else {
-                enemyLocation.y = character_location.y + xdist;
+                enemyLocation.y = character_location.y + ydist;
             }
         }
     }
 
-    private void characterSetup(){
-        //this should change based on users choice of char
-        player = new HumanCharacter(1,1,6,1,0);
-        player.weaponAttack = 1;
 
-        //this should change based on difficulty selected
-        enemies = new AICharacter[3];
-        //first enemy has 8-12 health, 2 atk, 4 def, lvl 1
-        enemies[0] = new AICharacter((int) (Math.random() * 5) + 8, 1,
-                2,4,0);
-        //second enemy has 16-21 health, 9-11 atk, 6 def, lvl 3
-        enemies[1] = new AICharacter((int) (Math.random() * 6) + 16, 3,
-                (int) (Math.random() * 3) + 9, 6, 0);
-        //third enemy has 20-35 health, 14-15 atk, 15-19 def, lvl 5
-        enemies[2] = new AICharacter((int) (Math.random() * 16) + 20, 6,
-                (int) (Math.random() * 2) + 14, (int) (Math.random() * 5) + 15,
-                0);
-
-        enemies[0].weaponAttack = 1;
-        enemies[1].weaponAttack = 3;
-        enemies[2].weaponAttack = 5;
-
-        enemies[0].intelligence = 0;
-        enemies[1].intelligence=1;
-        enemies[2].intelligence=2;
-
-        enemies[1].numHeals = 1;
-        enemies[2].numHeals = 3;
-
-        enemies[0].maxHealth = enemies[0].health;
-        enemies[1].maxHealth = enemies[1].health;
-        enemies[2].maxHealth = enemies[2].health;
-
-
-    }
 
 }

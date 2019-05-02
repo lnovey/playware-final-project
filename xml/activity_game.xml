@@ -112,6 +112,85 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="You are at"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:id="@+id/position"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="X = "
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_marginRight="25dp"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="true"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="350dp"
+        android:layout_below="@id/position"
+        android:id="@+id/x_position"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Y = "
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_marginLeft="25dp"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="350dp"
+        android:layout_below="@id/position"
+        android:id="@+id/y_position"/>
+
+    <Button
+        android:id="@+id/upButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="150dp"
+        android:layout_marginBottom="200dp"
+        android:text="up" />
+
+    <Button
+        android:id="@+id/downButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="150dp"
+        android:layout_marginBottom="100dp"
+        android:text="down" />
+
+    <Button
+        android:id="@+id/leftButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="250dp"
+        android:layout_marginBottom="150dp"
+        android:text="left" />
+
+    <Button
+        android:id="@+id/rightButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="150dp"
+        android:text="right" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Power up generated at"
         android:textSize="30sp"
         android:fontFamily="casual"
@@ -148,31 +227,6 @@
         android:layout_toLeftOf="@id/power_up_y"
         android:id="@+id/power_up_x"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="You received:"
-        android:textSize="30sp"
-        android:fontFamily="casual"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="false"
-        android:layout_marginRight="90dp"
-        android:layout_below="@id/power_up_x"
-        android:id="@+id/power_up_received"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textSize="30sp"
-        android:fontFamily="casual"
-        android:layout_alignParentTop="false"
-        android:layout_alignParentRight="true"
-        android:layout_centerInParent="false"
-        android:layout_marginRight="50dp"
-        android:layout_below="@id/power_up_received"
-        android:id="@+id/power_up_name"/>
 
     <TextView
         android:layout_width="wrap_content"
@@ -205,40 +259,117 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="You are at"
+        android:text="You received:"
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="90dp"
+        android:layout_below="@id/power_up_x"
+        android:id="@+id/power_up_received"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="50dp"
+        android:layout_below="@id/power_up_received"
+        android:id="@+id/power_up_name"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="50dp"
+        android:layout_below="@id/power_up_name"
+        android:id="@+id/power_up_comment"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="30sp"
+        android:fontFamily="casual"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="false"
+        android:layout_marginRight="50dp"
+        android:layout_below="@id/power_up_comment"
+        android:id="@+id/full_health_message"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
         android:textSize="30sp"
         android:fontFamily="casual"
         android:layout_alignParentTop="false"
         android:layout_alignParentLeft="false"
         android:layout_centerInParent="true"
-        android:id="@+id/position"/>
+        android:layout_below="@id/y_position"
+        android:id="@+id/fight_the_boss"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="X = "
+        android:text=""
         android:textSize="30sp"
         android:fontFamily="casual"
-        android:layout_marginRight="25dp"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="false"
+        android:layout_centerInParent="true"
+        android:layout_marginRight="20dp"
+        android:layout_below="@id/fight_the_boss"
+        android:id="@+id/go_to_the_boss"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="30sp"
+        android:fontFamily="casual"
         android:layout_alignParentTop="false"
         android:layout_alignParentLeft="true"
         android:layout_centerInParent="true"
         android:layout_marginLeft="335dp"
-        android:layout_below="@id/position"
-        android:id="@+id/x_position"/>
+        android:layout_below="@id/go_to_the_boss"
+        android:id="@+id/boss_location_x"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Y = "
+        android:text=""
         android:textSize="30sp"
         android:fontFamily="casual"
-        android:layout_marginLeft="25dp"
         android:layout_alignParentTop="false"
         android:layout_alignParentRight="true"
-        android:layout_centerInParent="false"
+        android:layout_centerInParent="true"
         android:layout_marginRight="335dp"
-        android:layout_below="@id/position"
-        android:id="@+id/y_position"/>
-
+        android:layout_below="@id/go_to_the_boss"
+        android:id="@+id/boss_location_y"/>
+<!--
+    <TextView
+        android:id="@+id/processing_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:fontFamily="casual"
+        android:text="Loading main page,please don't do anything"
+        android:textSize="50sp" />
+-->
 </RelativeLayout>
