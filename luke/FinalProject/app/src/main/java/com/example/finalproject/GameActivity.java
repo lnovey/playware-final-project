@@ -294,9 +294,9 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         //update enemy generation >>>>
         //come up with some creative names and sayings>> add these to screen
         //update battle activity xml
-        //update attack values on screen (same as human characters)
+        //update attack values on screen (same as human characters) >>>>
         //modify powerup gen for final level(rishav)
-        //implement user death and \/
+        //implement user death and \/ >>>>
         //^implement more clear description of in between levels ^
 
         //get leveling up working and test it!
