@@ -30,6 +30,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     //Point character_location = new Point(tzp_object.character_start_x, tzp_object.character_start_y); // Stores the location of our character
     Point character_location = tzp_object.character_location; // Holds the location of the character
 
+    // point for the enemy location to be generated to
     Point enemyLocation;
 
     //the state of the game loop
@@ -37,8 +38,6 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     //1 = encountered battle (and still in it)
     // 2 = finished battle
     private int currState;
-
-    //lock for thread printing
 
     //boolean to run game loop
     private boolean isGameRunning, isBossDead, isBossGen, isSkipGenFlag;
@@ -53,15 +52,14 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     // Boosts for character vitals
     int xp_boost = 0;
     int health_boost = 0;
-
     int attack_boost = 0;
     int defence_boost = 0;
     int initial_xp = 0; // Stores the initial XP points at the start of every level
 
     int health_cap = 30; // Maximum limit for health
 
+    //integer value of enemies fought, differs from current_level
     int numFought = 0;
-
 
     // XP threshold points for each level
     int level_one_xp_threshold = 10;
@@ -96,12 +94,11 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
      TextView boss_x;// = findViewById(R.id.boss_location_x);
      TextView boss_y;// = findViewById(R.id.boss_location_y);
 
-
-
-    // Textview variables for the character's vital signs
+    //Textview variables for powerup coordinates
     TextView power_up_x;// = findViewById(R.id.power_up_x);
     TextView power_up_y;// = findViewById(R.id.power_up_y);
 
+    // Textview variables for the character's vital signs
     TextView display_xp;
     TextView display_health;// = findViewById(R.id.health_value);
     TextView display_attack;// = findViewById(R.id.attack_value);
@@ -132,6 +129,10 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     // Index 4 -> Attack points gained
     String[] power_up_details = new String[5];
 
+
+    //this is the main game loop that houses all of the logic for our project
+    //much of the code has been exported to other methods but some bulky pieces remain directly in the loop
+    // the thread.sleep method called at the end is how long the thread sleeps in between updates
     Thread mainGameLoop = new Thread(){
 
         @Override
@@ -139,18 +140,19 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         {
             try {
 
+                //setting up the tiles, this time pause seems to work consistently
+                // without it the only conistent method is to call setupTiles in the while loop
                 Thread.sleep(5000);
                 setupTiles();
                 Thread.sleep(2000);
 
-                //worked with 10,1
-                //failed 1, 1
-                //works with 5,2
+                //the main section of the loop that is run by far the most times
+                //tried to keep it efficient as possible
                 while (isGameRunning){
-                    //uncomment this maybe to try to not have it in while loop
+                    //if the tile setup isnt working outside the while loop this can be uncommented
                     //setupTiles();
 
-
+                    //switching on current state to allow better interfacing with the UI, esp for battles
                     switch (currState) {
                         case 0: // walking in overworld
                             overworldUpdate();
@@ -176,9 +178,11 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
                             //nx();
                             break;
-                        case 3:
+                        case 3: //game is over, finish not necessary for winning, required for losing
                             isGameRunning = false;
-                            finish();
+                            if (!isBossDead){
+                                finish();
+                            }
                             break;
                         case 17:
                             Thread.sleep(4000);
@@ -188,6 +192,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                             break;
                     }
 
+                    //*****This is how long the loop sleeps in between updates****//
                     Thread.sleep(300); //wait 1.5 seconds each loop
                 }
 
@@ -198,7 +203,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         }
     };
 
-
+    //onCreate initializes a lot of variables that were declared in the class
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -280,37 +285,12 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
         initial_xp = vital_signs_array[0]; // Updating the initial XP for the first level
 
-
-
-        //Todo
-
-        //get numfought and current level working together, >>>>
-        // ^don't jump into new battle when old one is done, >>>>
-        // tell user they cant move on when they go to 20 20 >>>>
-        //last ai implement >>>>
-        //make attack-def not go negative >>>>
-        // check coordinate layout (is it x,y on both the you are and the power up gen?) >>>>
-        //while fight is processing have something on the screen telling the user to wait >>>>
-        //update enemy generation >>>>
-        //come up with some creative names and sayings>> add these to screen
-        //update battle activity xml
-        //update attack values on screen (same as human characters) >>>>
-        //modify powerup gen for final level(rishav)
-        //implement user death and \/ >>>>
-        //^implement more clear description of in between levels ^
-
-        //get leveling up working and test it!
-        //bulky boy or destructive dude or genuine guy or sketchy specimen?
-        //add tile input to the battle
-
-
-
-
         //here is the main setup method!
         setupEverything();
         //characterSetup();
 
 
+        //unused buttons
         leftButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
