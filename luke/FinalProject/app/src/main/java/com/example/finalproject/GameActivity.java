@@ -38,8 +38,10 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     // 2 = finished battle
     private int currState;
 
+    //lock for thread printing
+
     //boolean to run game loop
-    private boolean isGameRunning, isBossDead, isBossGen;
+    private boolean isGameRunning, isBossDead, isBossGen, isSkipGenFlag;
 
     // Array that holds the details about the character's vital signs
     // Index 0 -> XP points
@@ -54,12 +56,19 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
     int attack_boost = 0;
     int defence_boost = 0;
+    int initial_xp = 0; // Stores the initial XP points at the start of every level
 
     int health_cap = 30; // Maximum limit for health
 
     int numFought = 0;
 
-    String axis = "\0";
+
+    // XP threshold points for each level
+    int level_one_xp_threshold = 10;
+    int level_two_xp_threshold = 20;
+    int level_three_xp_threshold = 40;
+
+    String axis = "\0"; // Stores which axis we are moving on
 
     // Textview to tell the user not to act after a battle
     TextView processing;
@@ -74,6 +83,20 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
     TextView power_up_message;// = findViewById(R.id.power_up_received);
     TextView new_power_up;// = findViewById(R.id.power_up_name);
+
+    // Textview variable for displaying the power-up comments
+    TextView power_up_tagline;// = findViewById(R.id.power_up_comment);
+
+    // Textview variable for displaying the full health message
+    TextView full_health_text;// = findViewById(R.id.full_health_message);
+
+    // Textview variables for the boss location
+     TextView boss;// = findViewById(R.id.fight_the_boss);
+     TextView boss_message;// = findViewById(R.id.go_to_the_boss);
+     TextView boss_x;// = findViewById(R.id.boss_location_x);
+     TextView boss_y;// = findViewById(R.id.boss_location_y);
+
+
 
     // Textview variables for the character's vital signs
     TextView power_up_x;// = findViewById(R.id.power_up_x);
@@ -98,7 +121,15 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     String seven_moves = "\0"; // We use this string to check when seven moves are over
 
     String power_up_name = "\0"; // Stores the name of the power up
+    String power_up_comments = "\0"; // Holds comments for corresponding power-ups
 
+
+    // Array that holds the details about the power-ups
+    // Index 0 -> Name of the power-up
+    // Index 1 -> XP points gained
+    // Index 2 -> Health points gained
+    // Index 3 -> Attack points gained
+    // Index 4 -> Attack points gained
     String[] power_up_details = new String[5];
 
     Thread mainGameLoop = new Thread(){
@@ -180,6 +211,13 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         display_attack = findViewById(R.id.attack_value);
         display_defence = findViewById(R.id.defence_value);
 
+        power_up_tagline = findViewById(R.id.power_up_comment);
+        full_health_text = findViewById(R.id.full_health_message);
+        boss = findViewById(R.id.fight_the_boss);
+        boss_message = findViewById(R.id.go_to_the_boss);
+        boss_x = findViewById(R.id.boss_location_x);
+        boss_y = findViewById(R.id.boss_location_y);
+
         // Connecting to the Moto tiles
         connection.startMotoConnection(this);
         connection.setDeviceId(4);
@@ -233,6 +271,9 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         update_position_x.setText(toString().valueOf(character_location.x));
         update_position_y.setText(toString().valueOf(character_location.y));
 
+        initial_xp = vital_signs_array[0]; // Updating the initial XP for the first level
+
+
 
         //Todo
 
@@ -243,8 +284,13 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         //make attack-def not go negative >>>>
         // check coordinate layout (is it x,y on both the you are and the power up gen?) >>>>
         //while fight is processing have something on the screen telling the user to wait >>>>
-        //update enemy generation >>
+        //update enemy generation >>>>
         //come up with some creative names and sayings>> add these to screen
+        //update battle activity xml
+        //update attack values on screen (same as human characters)
+        //modify powerup gen for final level(rishav)
+        //
+
         //get leveling up working and test it!
         //bulky boy or destructive dude or genuine guy or sketchy specimen?
         //add tile input to the battle
@@ -448,30 +494,73 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
     }
 
+    private boolean shouldBossGenerate(){
+        //System.out.println("numf:"+numFought+"cL:"+tzp_object.current_level);
+        if (numFought + 1 == tzp_object.current_level){
+            //System.out.println("numf=cL");
+            if (!isBossGen){
+                System.out.println("settingtrue");
+                isBossGen = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void printFightLocation(){
+
+        final String tempx = ""+enemyLocation.x;
+        final String tempy = ""+enemyLocation.y;
+
+/*
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+*/
+
+        runOnUiThread(new Runnable() {
+
+            @Override
+            public void run() {
+                boss.setText("You will fight you nemesis for this level");
+                boss_message.setText("Go to:");
+                boss_x.setText(".x");
+                boss_x.setText(tempx);
+                boss_y.setText(tempy);
+
+            }
+        });
+    }
+
     private void overworldUpdate(){ // gets called everytick while in currState = 0
 
-        System.out.println("******UPDATING******");
-        if (character_location.x == 10 && character_location.y == 10 &&
-                (numFought + 1 == tzp_object.current_level)){
-            if (!isBossGen){
-                generateFightLocataion();
-                System.out.println("generated boss at" + enemyLocation.x + "," +
-                        enemyLocation.y);
-                isBossGen = true;
-            }
-            /*
-            // if we find a boss and need to fight a boss then lets fight
+        //System.out.println("******UPDATING******");
 
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    processing.setVisibility(View.VISIBLE);
-                }
-            });
-            enterBattle();
-            */
-        }
+        //this if statement checks if we should generate boss
+        //moved to shouldBossGen method as seen later
+//        if (character_location.x == 10 && character_location.y == 10 &&
+//                (numFought + 1 == tzp_object.current_level)){
+//            if (!isBossGen){
+//                generateFightLocataion();
+//                System.out.println("generated boss at" + enemyLocation.x + "," +
+//                        enemyLocation.y);
+//                isBossGen = true;
+//            }
+//
+//            // if we find a boss and need to fight a boss then lets fight
+//
+//            runOnUiThread(new Runnable() {
+//
+//                @Override
+//                public void run() {
+//                    processing.setVisibility(View.VISIBLE);
+//                }
+//            });
+//            enterBattle();
+//
+//        }
 
         if (character_location.equals(enemyLocation)){
             runOnUiThread(new Runnable() {
@@ -497,7 +586,69 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                 }
             });
 
-            power_up_details = tzp_object.power_up_generator(); // Generating a power-up randomly
+            int delta_xp = vital_signs_array[0] - initial_xp; // Keeps track of the change in XP points gained in each level
+
+            switch (tzp_object.current_level)
+            {
+                case 1: // Generating the power-ups for level 1
+                    if (delta_xp <= level_one_xp_threshold )
+                    {
+                        power_up_details = tzp_object.power_up_generator(); // Generating a power-up randomly
+                    }
+                    else
+                    {
+                        if (shouldBossGenerate()){
+                            generateFightLocataion();
+                            printFightLocation();
+                            System.out.println("generated boss at" + enemyLocation.x + "," +
+                                enemyLocation.y);
+                            isBossGen = true;
+                            isSkipGenFlag = true;
+                        }
+
+                    }
+                    break;
+
+                case 2: // Generating the power-ups for level 2
+                    if (vital_signs_array[0] - initial_xp <= level_two_xp_threshold )
+                    {
+                        power_up_details = tzp_object.power_up_generator(); // Generating a power-up randomly
+                    }
+                    else
+                    {
+                        if (shouldBossGenerate()){
+                            generateFightLocataion();
+                            printFightLocation();
+                            System.out.println("generated boss at" + enemyLocation.x + "," +
+                                    enemyLocation.y);
+                            isBossGen = true;
+                            isSkipGenFlag = true;
+
+                        }
+                    }
+                    break;
+
+                case 3: // Generating the power-ups for level 3
+                    if (vital_signs_array[0] - initial_xp <= level_three_xp_threshold )
+                    {
+                        power_up_details = tzp_object.power_up_generator(); // Generating a power-up randomly
+                    }
+                    else
+                    {
+
+                        if (shouldBossGenerate()){
+                            generateFightLocataion();
+                            printFightLocation();
+                            System.out.println("generated boss at" + enemyLocation.x + "," +
+                                    enemyLocation.y);
+                            isBossGen = true;
+                            isSkipGenFlag = true;
+
+                        }
+                    }
+                    break;
+            }
+
         }
 
 
@@ -511,6 +662,13 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             health_boost = parseInt(power_up_details[2]);
             attack_boost = parseInt(power_up_details[3]);
             defence_boost = parseInt(power_up_details[4]);
+
+            if (power_up_name.equals("Fawke's the Pheonix"))
+            {
+                full_health_text.setText("FULL HEALTH BOOST!!!"); // Displaying the full health message
+            }
+
+            power_up_comments = weapon_comments(power_up_name); // Generating a comment for the power-up received
 
             // Updating each element of the vital signs array (XP, Health, Attack, Defence)
             vital_signs_array[0] = vital_signs_array[0] + xp_boost;
@@ -540,6 +698,9 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                     display_health.setText(toString().valueOf(vital_signs_array[1]));
                     display_attack.setText(toString().valueOf(vital_signs_array[2]));
                     display_defence.setText(toString().valueOf(vital_signs_array[3]));
+
+                    power_up_tagline.setText(power_up_comments); // Updating the comment for the power-up on the screen
+
                 }
             });
 
@@ -563,8 +724,8 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
 
 
-        System.out.println("****** DONE UPDATE ******* \n\n");
-        System.out.println("\n");
+        //System.out.println("****** DONE UPDATE ******* \n\n");
+        //System.out.println("\n");
     }
 
     //we've been told the chracter has reached the end of the level so let's update
@@ -607,6 +768,14 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
                     power_up_y.setText("-");
                     power_up_message.setText("");
                     new_power_up.setText("");
+                    power_up_tagline.setText("");
+
+                    // Resetting the boss details at the beginning of every level
+                    boss.setText("");
+                    boss_message.setText("");
+                    boss_x.setText("");
+                    boss_y.setText("");
+
 
                 }
             });
@@ -693,6 +862,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
     private void battleOver(){ //do some xp gaining, update some we won battle stuff,
         // and get loop going again
         numFought++;
+        isBossGen = false;
         currState = 2;
         enemyLocation.set(1729,1729);
         //System.out.println("back from battle");
@@ -707,7 +877,7 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
         start_game_intent.putExtra("playerFighter", player);
         startActivityForResult(start_game_intent,17);
         System.out.println("just sent activity to battle, lets keep this thread going");
-        isBossGen = false;
+
 
 
         //System.out.println("back from battle, need to update user xp or death\nand return to game loop");
@@ -715,6 +885,87 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
     }
 
+    // This function generates tag lines for every weapon
+    public String weapon_comments(String weapon_name)
+    {
+        String comment = "\0"; // Holds the comment that will be made for that power-up
+        switch (weapon_name)
+        {
+            case "The Sorting Hat":
+                comment = "Which house should I put you in?";
+                break;
+
+            case "Deadpool's Sword":
+                comment = "Maximum effort!!!";
+                break;
+
+            case "Web Cartridges and Shooters":
+                comment = "I am Spider-Man!";
+                break;
+
+            case "Iron Man's Arc Reactor":
+                comment = "I am Iron-Man";
+                break;
+
+            case "Captain America's Shield":
+                comment = "I could do this all day";
+                break;
+
+            case "Adamantium Claws":
+                comment = "I'll cut you bub";
+                break;
+
+            case "Hawkeye's Bow and Arrow":
+                comment = "I don't seem to miss";
+                break;
+
+            case "The Symbiote Suit":
+                comment = "We are Venom!!!";
+                break;
+
+            case "The Pym Particle":
+                comment = "Now where's Anthony??!";
+                break;
+
+            case "The War Machine Suit":
+                comment = "Second Iron-Man??!";
+                break;
+
+            case "The Hulkbuster Suit":
+                comment = "Is Hulk Iron-Man now?!";
+                break;
+
+            case "Thor's Mjölnir":
+                comment = "Odin deems you worthy";
+                break;
+
+            case "Mar-Vell's Nega-Bands":
+                comment = "You are now cosmically aware";
+                break;
+
+            case "The Sword of Gryffindor":
+                comment = "You are a worthy Gryffindor";
+                break;
+
+            case "The Bleeding Edge Suit":
+                comment = "It's Nanotech. Do you like it?";
+                break;
+
+            case "The Eye of Agamotto":
+                comment = "I now possess the time stone";
+                break;
+
+            case "The Stormbreaker":
+                comment = "This is Thanos killing kind of a weapon";
+                break;
+
+            case "Fawke's the Pheonix":
+                comment = "Rise from the ashes";
+                break;
+        }
+
+        return comment;
+    }
 
     private void nx(){ //updates user location neg x axis
         character_location.x -= 1;
