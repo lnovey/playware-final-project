@@ -683,6 +683,15 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
 
         if (character_location.x == tzp_object.power_up_location.x && character_location.y == tzp_object.power_up_location.y)
         {
+            runOnUiThread(new Runnable() {
+
+                  @Override
+                  public void run() {
+                      game_over_message.setText("");
+                  }
+              });
+
+
             System.out.println("You are at the power-up location");
 
             // Getting all the details about our weapon
@@ -760,6 +769,15 @@ public class GameActivity extends AppCompatActivity implements OnAntEventListene
             } else {
                 //character at 20,20 but did not defeat boss
                 System.out.println("at teleporter, need to defeat boss to turn it on!");
+
+                runOnUiThread(new Runnable() {
+
+                                  @Override
+                                  public void run() {
+                                      game_over_message.setText("defeat the boss to activate the teleporter! ");
+
+                                  }
+                              });
 
             }
 

@@ -23,6 +23,7 @@ public class BattleActivity extends AppCompatActivity {
     //1 means continuing in "game loop"
     //2 means fight has finished
     int battleState = 0;
+    int maxHealth=0;
     boolean isThreadOn = true;
     boolean isFight, isUserDone;
     LinearLayout layout;
@@ -63,12 +64,15 @@ public class BattleActivity extends AppCompatActivity {
         enemy_health = findViewById(R.id.enemy_health);
         trash = findViewById(R.id.trash);
         enemy_health_value = findViewById(R.id.enemy_health_value);
+        enemy_health.setVisibility(View.GONE);
+        enemy_attack.setVisibility(View.GONE);
 
 
         //ai.weaponAttack = 10;
         //user.weaponAttack = 10;
         enemy = getIntent().getParcelableExtra("enemyFighter");
         player = getIntent().getParcelableExtra("playerFighter");
+        maxHealth = player.health;
         //testBattle = new Battle();
         //testBattle.layout = this.layout;
         //user.layout = this.layout;
@@ -106,6 +110,12 @@ public class BattleActivity extends AppCompatActivity {
                 //1/5 of the time print something funny and gain extra 20% attack
                 if (Math.random() < .2){
                     System.out.println("You really poked him hard");
+                    enemy_health.setText("You really poked him hard");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     tempAttack = 2;
                 }
 
@@ -119,6 +129,18 @@ public class BattleActivity extends AppCompatActivity {
                     //todo
                     // print that the user isn't strong enough to harm
                     System.out.println("you cant hurt this guy");
+                    enemy_health.setText("You can't hurt this guy");
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
                 isUserDone = true;
                 battleState = 1;
@@ -136,10 +158,14 @@ public class BattleActivity extends AppCompatActivity {
                 int tempAttack = 0;
                 if (Math.random() < .2){
                     System.out.println("You're a wizard Harry");
-                    tempAttack = BattleActivity.this.player.health/10;
+                    enemy_health.setText("You're a wizard Harry!");
+
+                    tempAttack = maxHealth/20;
                 }
 
-                BattleActivity.this.player.health += 10 + tempAttack;
+                BattleActivity.this.player.health += (maxHealth/10) + tempAttack;
+
+
                 isUserDone = true;
                 battleState = 1;
                 startBattleTest(enemy);
@@ -168,6 +194,17 @@ public class BattleActivity extends AppCompatActivity {
 
                 if (enemy.health <= 0) {
                     System.out.println("you win");
+                    trash.setText("You win");
+                    try {
+                        Thread.sleep(1200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        Thread.sleep(2200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     isFight = false;
                     battleState = 2;
                 }
@@ -178,7 +215,12 @@ public class BattleActivity extends AppCompatActivity {
 
                             if (Math.random() < .11){ //the enemy gets a boosted attack
                                 System.out.println("Ouch, someone's been eating their spinach");
+                                trash.setText("Enemy attacks: Ouch! someone's been eating their spinach");
+
                                 tempAttack = 2;
+                            } else {
+                                trash.setText("Enemy attacks");
+
                             }
 
                             if (BattleActivity.this.player.defense < enemy.attack + enemy.weaponAttack + tempAttack) {
@@ -189,6 +231,8 @@ public class BattleActivity extends AppCompatActivity {
                             } else {
                                 //todo
                                 //print that the enemy can't even harm you
+                                trash.setText("Enemy attacks: This guy is too weak to hurt you");
+
                             }
 
                             break;
@@ -196,6 +240,8 @@ public class BattleActivity extends AppCompatActivity {
                             break;
                         case 3: //heal
                             enemy.health += action.info[0];
+                            trash.setText("Enemy heals");
+
                             break;
                         default:
                             break;
@@ -209,6 +255,17 @@ public class BattleActivity extends AppCompatActivity {
                 enemy_health_value.setText("Enemy health" + enemy.health);
                 if (BattleActivity.this.player.health <= 0) {
                     System.out.println("you lose");
+                    trash.setText("You lose");
+                    try {
+                        Thread.sleep(1200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        Thread.sleep(2200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     isFight = false;
                     battleState = 2;
                 }
